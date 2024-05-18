@@ -19,7 +19,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { IoFlashOutline, IoSettingsOutline } from "react-icons/io5";
 import { LuLayoutTemplate } from "react-icons/lu";
-import { RxDoubleArrowLeft, RxText } from "react-icons/rx";
+import { RxCross2, RxDoubleArrowLeft, RxText } from "react-icons/rx";
 import { FaBuromobelexperte, FaCrown } from "react-icons/fa6";
 import { MdOutlineCloudUpload, MdSearch } from "react-icons/md";
 import { LiaToggleOffSolid, LiaToggleOnSolid } from "react-icons/lia";
@@ -51,6 +51,7 @@ import {
   setRemovePremium,
   setTemplate,
   setimage,
+  setBgImage,
 } from "./redux/reducer/prosite_data";
 import style from "./pages/CustomScrollbar.module.css";
 import ReactDOMServer from "react-dom/server";
@@ -85,6 +86,7 @@ function page() {
   const [pop, setPop] = useState(false);
   const [limg, setLimg] = useState([]);
   const [a, setA] = useState(null);
+  const [uploadtype, setUploadtype] = useState("image")
   const drawerRef = useRef();
 
   useEffect(() => {
@@ -139,8 +141,9 @@ function page() {
   const [switcher, setSwitcher] = useState(true);
   const [header1, setHeader1] = useState("Main long header with several lines");
   const [Button1, setButton1] = useState("Click now");
-  const [Link1, setLink1] = useState("");
   const [loading, setLoading] = useState(false);
+  const [load, setLoad] = useState(false);
+  const [blinks, setBlinks] = useState([])
   const [header2, setHeader2] = useState(
     "This is subheader. Stormi is a dog. She is dark grey and has long legs. Her eyes are expressive and are able to let her humans know what she is thinking."
   );
@@ -158,9 +161,25 @@ function page() {
   const [close, setClose] = useState(Clic);
   const [link, setLink] = useState([]);
 
+  console.log(uploadtype)
+
+  const uploaderPics = async () => {
+    try {
+      if (uploadtype === "image") {
+        await uploadcont()
+        console.log("e")
+      } else {
+        await backgroundUpload()
+        console.log("gh")
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const uploadcont = async () => {
     try {
-      setLoading(true);
+      setLoad(true);
       const form = new FormData();
       form.append("file", file);
       const res = await axios.post(`${API}/v1/uploaddata/${id}`, form);
@@ -168,18 +187,42 @@ function page() {
         toast.success("Image Uploaded!");
         await getitems();
         setFile("");
-        setLoading(false);
+        setLoad(false);
       } else {
         console.log("Error");
       }
-      setLoading(false);
+      setLoad(false);
     } catch (e) {
       console.log(e);
       console.log("Something Went Wrong!");
     } finally {
-      setLoading(false);
+      setLoad(false);
     }
   };
+
+  const backgroundUpload = async () => {
+    try {
+      setLoad(true);
+      const form = new FormData();
+      form.append("file", file);
+      const res = await axios.post(`${API}/v1/background/${id}`, form);
+      if (res.data.success) {
+        toast.success("Image Uploaded!");
+        await getBackgrounds()
+        setFile("");
+        setLoad(false);
+      } else {
+        console.log("Error");
+      }
+      setLoad(false);
+    } catch (e) {
+      console.log(e);
+      console.log("Something Went Wrong!");
+    } finally {
+      setLoad(false);
+    }
+  };
+
 
   const getitems = async () => {
     try {
@@ -192,9 +235,21 @@ function page() {
     }
   };
 
+  const getBackgrounds = async () => {
+    try {
+      const res = await axios.get(`${API}/v1/getbackground/${id}`);
+      if (res.data.success) {
+        setBlinks(res.data.links)
+      }
+    } catch (e) {
+      console.log("Items not fetched");
+    }
+  };
+
   useEffect(() => {
     if (id) {
       getitems();
+      getBackgrounds()
     }
   }, [id]);
 
@@ -1437,10 +1492,6 @@ function page() {
     }
   };
 
-  // console.log(component, "component")
-  // console.log(trigger, "trigger")
-  // console.log(trigger && size.width < 821)
-
   return (
     <Drawer
       open={trigger && size.width < 821}
@@ -2236,9 +2287,10 @@ function page() {
                   <div className="h-[80%] w-[90%] justify-evenly mt-4">
                     {/* Image */}
                     <div className="h-[550px] w-[100%]">
+                      {console.log(file, "render file")}
                       <div className=" items-center flex justify-center">
                         <div className="grid bg-[#f4f4f4] text-[#424242] w-full grid-col-1 gap-3 p-4 rounded-xl">
-                          <div className="font-semibold ">Upload Photo</div>
+                          <div className="font-semibold ">Upload {uploadtype === "image" ? "Photo" : "Background Images"}</div>
                           <input
                             type="file"
                             name="myFile"
@@ -2248,7 +2300,10 @@ function page() {
                             className="w-[100%] self-start hidden text-[#424242]"
                           />
                           {file ? (
-                            <div className="flex items-center justify-center h-full w-full">
+                            <div className="flex items-center relative justify-center h-full w-full">
+                              <div onClick={() => setFile("")} className="absolute  top-1 px-2 right-0">
+                                <RxCross2 className="text-xl font-semibold" />
+                              </div>
                               <Image
                                 src={URL.createObjectURL(file)}
                                 alt="upload"
@@ -2277,7 +2332,7 @@ function page() {
                           {file && (
                             <>
                               {" "}
-                              {loading ? (
+                              {load ? (
                                 <button
                                   className="bg-blue-800 p-2 flex justify-center items-center text-white px-5 rounded-xl font-semibold"
                                   disabled
@@ -2289,7 +2344,7 @@ function page() {
                               ) : (
                                 <button
                                   className="bg-blue-800 p-2 text-white px-5 rounded-xl font-semibold"
-                                  onClick={() => uploadcont()}
+                                  onClick={() => uploaderPics()}
                                 >
                                   Upload
                                 </button>
@@ -2299,32 +2354,76 @@ function page() {
                         </div>
                       </div>
                       <div className="border-b-[0.5px] w-full border-dotted mt-2"></div>
-                      <div className="text-[#9c9c9c] font-medium text-[14px] mt-2">
-                        Uploaded Images
-                      </div>
-                      <div className="h-[350px] w-[290px] pn:max-sm:w-[100%] ">
-                        <div
-                          className={`w-[100%] pn:max-sm:w-[100%] ${style.customScrollbar} overflow-auto grid grid-cols-2 h-[100%]`}
-                        >
-                          {link &&
-                            link.map((m, i) => (
-                              <div
-                                key={i}
-                                onClick={() => {
-                                  dispatch(setimage(m));
-                                }}
-                                className="flex items-center justify-center w-[130px] mt-1 h-[130px] hover:bg-[#28292c] hover:shadow-lg hover:scale-105 duration-75 select-none cursor-pointer bg-slate-200"
-                              >
-                                <div className="w-[90%] h-[90%]">
-                                  <img
-                                    src={m}
-                                    alt="pic"
-                                    className="p-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-slate-200 "
-                                  />
+                      <div className={`flex flex-col max-h-[400px] ${style.customScrollbar} overflow-auto`}>
+                        <div className="flex justify-between w-full mt-3 gap-3 items-center">
+                          <div onClick={() => setUploadtype("image")} className={`w-full ${uploadtype === "image" ? "border-b-2 border-blue-500" : ""}  pb-1 flex text-[#9c9c9c] font-medium justify-center items-center text-sm `}>Images</div>
+                          <div onClick={() => setUploadtype("background")} className={`w-full ${uploadtype === "background" ? "border-b-2 border-blue-500" : ""} pb-1 flex text-[#9c9c9c] font-medium justify-center items-center text-sm `}>Background Images</div>
+                        </div>
+                        {
+                          uploadtype === "image" ?
+                            <div>
+                              <div className="text-[#9c9c9c] font-medium text-[14px] mt-2">
+                                Uploaded Images
+                              </div>
+                              <div className="h-[350px] w-[290px] pn:max-sm:w-[100%] ">
+                                <div
+                                  className={`w-[100%] pn:max-sm:w-[100%] grid grid-cols-2 h-[100%]`}
+                                >
+                                  {link &&
+                                    link.map((m, i) => (
+                                      <div
+                                        key={i}
+                                        onClick={() => {
+                                          dispatch(setimage(m));
+                                        }}
+                                        className="flex items-center justify-center w-[130px] mt-1 h-[130px] hover:bg-[#28292c] hover:shadow-lg hover:scale-105 duration-75 select-none cursor-pointer bg-slate-200"
+                                      >
+                                        <div className="w-[90%] h-[90%]">
+                                          <img
+                                            src={m}
+                                            alt="pic"
+                                            className="p-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-slate-200 "
+                                          />
+                                        </div>
+                                      </div>
+                                    ))}
                                 </div>
                               </div>
-                            ))}
-                        </div>
+                            </div> : <div>
+                              <div className="text-[#9c9c9c] font-medium text-[14px] mt-2">
+                                Background Images
+                              </div>
+                              <div className="h-[350px] w-[290px] pn:max-sm:w-[100%] ">
+                                <div
+                                  className={`w-[100%] pn:max-sm:w-[100%] grid grid-cols-2 h-[100%]`}
+                                >
+                                  {blinks &&
+                                    blinks.map((m, i) => (
+                                      <div
+                                        key={i}
+                                        onClick={() => {
+                                          dispatch(setBgImage(m));
+                                        }}
+                                        className="flex items-center justify-center w-[130px] mt-1 h-[130px] hover:bg-[#28292c] hover:shadow-lg hover:scale-105 duration-75 select-none cursor-pointer bg-slate-200"
+                                      >
+                                        <div className="w-[90%] h-[90%]">
+                                          <img
+                                            src={m}
+                                            alt="pic"
+                                            className="p-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-slate-200 "
+                                          />
+                                        </div>
+                                      </div>
+                                    ))}
+                                </div>
+                              </div>
+                            </div>
+
+                        }
+
+
+
+
                       </div>
                     </div>
                     {/* backgrounds */}
@@ -2889,7 +2988,7 @@ function page() {
                       <div className="h-[550px] w-[100%]">
                         <div className=" items-center flex justify-center">
                           <div className="grid bg-[#f4f4f4] text-[#424242] w-full grid-col-1 gap-3 p-4 rounded-xl">
-                            <div className="font-semibold ">Upload Photo</div>
+                            <div className="font-semibold ">Upload {uploadtype === "image" ? "Photo" : "Background Image"}</div>
                             <input
                               type="file"
                               name="myFile"
@@ -2927,7 +3026,7 @@ function page() {
                             {file && (
                               <>
                                 {" "}
-                                {loading ? (
+                                {load ? (
                                   <button
                                     className="bg-blue-800 p-2 flex justify-center items-center text-white px-5 rounded-xl font-semibold"
                                     disabled
@@ -2939,7 +3038,7 @@ function page() {
                                 ) : (
                                   <button
                                     className="bg-blue-800 p-2 text-white px-5 rounded-xl font-semibold"
-                                    onClick={() => uploadcont()}
+                                    onClick={() => uploaderPics()}
                                   >
                                     Upload
                                   </button>
@@ -2948,7 +3047,7 @@ function page() {
                             )}
                           </div>
                         </div>
-                        <div className="text-[#424242] mt-2">
+                        {/* <div className="text-[#424242] mt-2">
                           Uploaded Images
                         </div>
                         <div className="h-[350px] w-[290px] pn:max-sm:w-[100%] ">
@@ -2974,7 +3073,81 @@ function page() {
                                 </div>
                               ))}
                           </div>
+                        </div> */}
+
+
+                        <div className={`flex flex-col max-h-[400px] ${style.customScrollbar} overflow-auto`}>
+                          <div className="flex justify-between w-full mt-3 gap-3 items-center">
+                            <div onClick={() => setUploadtype("image")} className={`w-full ${uploadtype === "image" ? "border-b-2 border-blue-500" : ""}  pb-1 flex text-[#9c9c9c] font-medium justify-center items-center text-sm `}>Images</div>
+                            <div onClick={() => setUploadtype("background")} className={`w-full ${uploadtype === "background" ? "border-b-2 border-blue-500" : ""} pb-1 flex text-[#9c9c9c] font-medium justify-center items-center text-sm `}>Background Images</div>
+                          </div>
+                          {
+                            uploadtype === "image" ?
+                              <div>
+                                <div className="text-[#9c9c9c] font-medium text-[14px] mt-2">
+                                  Uploaded Images
+                                </div>
+                                <div className="h-[350px] w-[290px] pn:max-sm:w-[100%] ">
+                                  <div
+                                    className={`w-[100%] pn:max-sm:w-[100%] grid grid-cols-2 h-[100%]`}
+                                  >
+                                    {link &&
+                                      link.map((m, i) => (
+                                        <div
+                                          key={i}
+                                          onClick={() => {
+                                            dispatch(setimage(m));
+                                          }}
+                                          className="flex items-center justify-center w-[130px] mt-1 h-[130px] hover:bg-[#28292c] hover:shadow-lg hover:scale-105 duration-75 select-none cursor-pointer bg-slate-200"
+                                        >
+                                          <div className="w-[90%] h-[90%]">
+                                            <img
+                                              src={m}
+                                              alt="pic"
+                                              className="p-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-slate-200 "
+                                            />
+                                          </div>
+                                        </div>
+                                      ))}
+                                  </div>
+                                </div>
+                              </div> : <div>
+                                <div className="text-[#9c9c9c] font-medium text-[14px] mt-2">
+                                  Background Images
+                                </div>
+                                <div className="h-[350px] w-[290px] pn:max-sm:w-[100%] ">
+                                  <div
+                                    className={`w-[100%] pn:max-sm:w-[100%] grid grid-cols-2 h-[100%]`}
+                                  >
+                                    {blinks &&
+                                      blinks.map((m, i) => (
+                                        <div
+                                          key={i}
+                                          onClick={() => {
+                                            dispatch(setBgImage(m));
+                                          }}
+                                          className="flex items-center justify-center w-[130px] mt-1 h-[130px] hover:bg-[#28292c] hover:shadow-lg hover:scale-105 duration-75 select-none cursor-pointer bg-slate-200"
+                                        >
+                                          <div className="w-[90%] h-[90%]">
+                                            <img
+                                              src={m}
+                                              alt="pic"
+                                              className="p-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-slate-200 "
+                                            />
+                                          </div>
+                                        </div>
+                                      ))}
+                                  </div>
+                                </div>
+                              </div>
+
+                          }
+
+
+
+
                         </div>
+
                       </div>
                       {/* backgrounds */}
                     </div>
@@ -3383,7 +3556,7 @@ function page() {
           </div>
         </div>
       </div>
-    </Drawer>
+    </Drawer >
   );
 }
 
