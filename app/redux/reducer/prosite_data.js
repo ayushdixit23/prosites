@@ -7,7 +7,7 @@ export const prosite_data = createSlice({
     background_color: "#fff",
     showbutton: true,
     trigger: false,
-    component: 1,
+    component: 3,
     redirection: "",
     premium: {
       type: [],

@@ -238,16 +238,15 @@ const Template1 = ({
         ) : (
           <div
             style={{
-              // backgroundImage: background_color
-              //   ? null
-              //   : bgimage
-              //     ? `url(${bgimage})`
-              //     : null,
-              backgroundImage: `url(${bgimage})`,
+              backgroundColor: background_color || "transparent",
+              backgroundImage: background_color
+                ? null
+                : bgimage
+                  ? `url(${bgimage})`
+                  : null,
               backgroundPosition: "center",
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
-              backgroundColor: background_color || "transparent",
               height: "100%",
               width: "100%",
               display: "flex",

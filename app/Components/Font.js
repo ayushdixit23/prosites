@@ -10,6 +10,7 @@ import {
   setPremium,
   setRemovePremium,
   setTextColor,
+  setTrigger,
   settClic,
 } from "../redux/reducer/prosite_data";
 import axios from "axios";
@@ -17,9 +18,10 @@ import { ColorPicker, useColor } from "react-color-palette";
 import { FaCrown } from "react-icons/fa6";
 import { APIPRO } from "@/Essentials";
 import colors from "../assets/color.png";
-
 import style from "../pages/CustomScrollbar.module.css";
 import Image from "next/image";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { CiCircleCheck } from "react-icons/ci";
 function Styles({ search }) {
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
@@ -33,11 +35,14 @@ function Styles({ search }) {
   const { active, textcolor } = useSelector((state) => state.prosite_data);
   const [color, setColor] = useColor("");
   const [clickk, setClickk] = useState(false);
+  const [loading, setLoading] = useState(true)
 
   const Fonts = async () => {
     try {
+      setLoading(true)
       const res = await axios.get(`${APIPRO}/getfonts`);
       setFonnt(res.data);
+
     } catch (e) {
       console.log("Items not fetched");
     }
@@ -45,6 +50,7 @@ function Styles({ search }) {
 
   useEffect(() => {
     Fonts();
+    setLoading(false)
   }, []);
 
   useEffect(() => {
@@ -59,9 +65,8 @@ function Styles({ search }) {
     <>
       <div
         onClick={() => setClickk(false)}
-        className={`fixed inset-0 ${
-          clickk ? "z-10" : "-z-10"
-        } w-screen h-screen`}
+        className={`fixed inset-0 ${clickk ? "z-10" : "-z-10"
+          } w-screen h-screen`}
       ></div>
       <div className="my-2">
         <div className="text-[#979797] text-[14px] font-medium my-1">
@@ -94,7 +99,7 @@ function Styles({ search }) {
       </div>
       <div className="text-[#979797] text-[14px] font-medium my-1">Fonts</div>
       <div
-        className={`h-[100%] ${style.customScrollbar} h-[30vh] select-none w-full grid grid-cols-2 overflow-auto `}
+        className={`h-[100%] ${style.customScrollbar} max-h-[65vh] select-none w-full grid ${loading ? "grid-cols-1" : "grid-cols-2"}  overflow-auto `}
       >
         {search ? (
           <>
@@ -105,8 +110,11 @@ function Styles({ search }) {
               .map((d, i) => (
                 <div
                   key={i}
-                  className="flex w-[96%] h-[100px] mt-2 relative hover:bg-[#28292c] hover:shadow-lg hover:scale-105 duration-75 justify-center items-center select-none cursor-pointer bg-slate-100"
+                  className="flex w-[96%] h-[100px] mt-2  duration-75 relative group hover:border hover:border-[#00f] rounded-xl justify-center items-center select-none cursor-pointer bg-[#fafafa]"
                 >
+                  <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                    <CiCircleCheck className="text-[#00f]" />
+                  </div>
                   <div
                     onClick={() => {
                       dispatch(setFont1(d?.name));
@@ -127,22 +135,29 @@ function Styles({ search }) {
                           dispatch(setRemovePremium({ type: "fonts" }));
                         }
                       }
+                      dispatch(setTrigger(false))
                     }}
-                    className="w-[90%] bg-purple-200 h-[90%]"
+                    className="w-[90%] bg-[#fafafa] rounded-xl h-[90%]"
                   >
-                    <div className="px-4 py-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-slate-200 text-black items-center justify-center">
+                    <div className="px-4 py-2 flex-row flex  h-full w-full bg-[#fafafa] rounded-xl text-black items-center justify-center">
                       <link rel="stylesheet" href={d?.link} />
                       <div style={{ fontFamily: d?.name }}>{d?.name}</div>
-                      {d.premium && (
-                        <div className="absolute bottom-2 right-2 flex justify-center items-end">
-                          <div
-                            className=" bg-[#171717] 
+                      {title === "Free" && (
+                        <>
+                          {" "}
+                          {d.premium && (
+                            <div className="absolute bottom-2 right-2 flex justify-center items-end">
+                              <div
+                                className=" bg-[#171717] 
                      p-1 rounded-full self-end flex "
-                          >
-                            <FaCrown className=" text-orange-300 " />
-                          </div>
-                        </div>
+                              >
+                                <FaCrown className=" text-orange-300 " />
+                              </div>
+                            </div>
+                          )}
+                        </>
                       )}
+
                     </div>
                   </div>
                   <div className=" bottom-0"></div>
@@ -150,73 +165,87 @@ function Styles({ search }) {
               ))}
           </>
         ) : (
-          <>
-            {fonnt.map((d, i) => (
-              <div
-                key={i}
-                className="flex w-[96%] h-[100px] mt-2 relative hover:bg-[#28292c] hover:shadow-lg hover:scale-105 duration-75 justify-center items-center select-none cursor-pointer bg-slate-100"
-              >
-                <div
-                  onClick={() => {
-                    sessionStorage.setItem("font", d?.name);
-                    if (active == "h1") {
-                      sessionStorage.setItem("font1", d?.name);
-                    }
-                    if (active == "h2") {
-                      sessionStorage.setItem("font2", d?.name);
-                    }
-                    if (active == "h3") {
-                      sessionStorage.setItem("font3", d?.name);
-                    }
-                    dispatch(setFont1({ name: d?.name, link: d?.link }));
-                    dispatch(setFont2({ name: d?.name, link: d?.link }));
-                    dispatch(setFont3({ name: d?.name, link: d?.link }));
-                    if (!active) {
-                      dispatch(
-                        setFonts({
-                          Linke: d?.link,
-                          fontFamily: d?.name,
-                        })
-                      );
-                    }
-                    if (d.premium) {
-                      if (title === "Free") {
-                        dispatch(setPremium({ type: "fonts" }));
-                      }
-                    } else {
-                      if (title === "Free") {
-                        dispatch(setRemovePremium({ type: "fonts" }));
-                      }
-                    }
-                  }}
-                  className="w-[90%] bg-purple-200 h-[90%]"
-                >
-                  <div className="px-4 py-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-slate-200 text-black items-center justify-center">
-                    <link rel="stylesheet" href={d?.link} />
-                    <div style={{ fontFamily: d?.name }}>{d?.name}</div>
-                    {title === "Free" && (
-                      <>
-                        {" "}
-                        {d.premium && (
-                          <div className="absolute bottom-2 right-2 flex justify-center items-end">
-                            <div
-                              className=" bg-[#171717] 
-                     p-1 rounded-full self-end flex "
-                            >
-                              <FaCrown className=" text-orange-300 " />
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
+          <> {
+            loading ?
+              <div className="flex justify-center  h-[60vh] w-[100%] items-center">
+                <div className="animate-spin">
+                  <AiOutlineLoading3Quarters />
                 </div>
-                <div className=" bottom-0"></div>
               </div>
-            ))}
-          </>
-        )}
-      </div>
+              : <>
+                {
+                  fonnt.map((d, i) => (
+                    <div
+                      key={i}
+                      className="flex w-[96%] h-[100px] mt-2 relative group hover:border hover:border-[#00f] duration-75 justify-center rounded-xl items-center select-none cursor-pointer bg-[#fafafa]"
+                    >
+                      <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                        <CiCircleCheck className="text-[#00f]" />
+                      </div>
+                      <div
+                        onClick={() => {
+                          sessionStorage.setItem("font", d?.name);
+                          if (active == "h1") {
+                            sessionStorage.setItem("font1", d?.name);
+                          }
+                          if (active == "h2") {
+                            sessionStorage.setItem("font2", d?.name);
+                          }
+                          if (active == "h3") {
+                            sessionStorage.setItem("font3", d?.name);
+                          }
+                          dispatch(setFont1({ name: d?.name, link: d?.link }));
+                          dispatch(setFont2({ name: d?.name, link: d?.link }));
+                          dispatch(setFont3({ name: d?.name, link: d?.link }));
+                          if (!active) {
+                            dispatch(
+                              setFonts({
+                                Linke: d?.link,
+                                fontFamily: d?.name,
+                              })
+                            );
+                          }
+                          if (d.premium) {
+                            if (title === "Free") {
+                              dispatch(setPremium({ type: "fonts" }));
+                            }
+                          } else {
+                            if (title === "Free") {
+                              dispatch(setRemovePremium({ type: "fonts" }));
+                            }
+                          }
+                          dispatch(setTrigger(false))
+                        }}
+                        className="w-[90%] bg-[#fafafa] rounded-xl h-[90%]"
+                      >
+                        <div className="px-4 py-2 flex-row flex rounded-xl h-full w-full bg-[#fafafa]  text-black items-center justify-center">
+                          <link rel="stylesheet" href={d?.link} />
+                          <div style={{ fontFamily: d?.name }}>{d?.name}</div>
+                          {title === "Free" && (
+                            <>
+                              {" "}
+                              {d.premium && (
+                                <div className="absolute bottom-2 right-2 flex justify-center items-end">
+                                  <div
+                                    className=" bg-[#171717] 
+                     p-1 rounded-full self-end flex "
+                                  >
+                                    <FaCrown className=" text-orange-300 " />
+                                  </div>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      <div className=" bottom-0"></div>
+                    </div>
+                  ))
+                }
+              </>
+          }
+          </>)}
+      </div >
     </>
   );
 }

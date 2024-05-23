@@ -1,13 +1,8 @@
 "use client";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-// import { Controls, Player } from "@lottiefiles/react-lottie-player";
 import { HiOutlineDesktopComputer } from "react-icons/hi";
 import back from "@/app/assets/Visual.png";
-// import Templates from "@/app/Templates.png";
-// import Settings from "@/app/Settings.png";
-// import Elements from "@/app/Elements.png";
-// import textt from "@/app/text.png";
-import { CiMobile2 } from "react-icons/ci";
+import { CiCircleCheck, CiMobile2 } from "react-icons/ci";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import t1 from "./assets/t1.png";
 import t2 from "./assets/t2.png";
@@ -52,6 +47,13 @@ import {
   setTemplate,
   setimage,
   setBgImage,
+  setFonts,
+  setFont1,
+  setFont2,
+  setFont3,
+  setColor1,
+  setColor2,
+  setbackground,
 } from "./redux/reducer/prosite_data";
 import style from "./pages/CustomScrollbar.module.css";
 import ReactDOMServer from "react-dom/server";
@@ -96,17 +98,38 @@ function page() {
     setId(parseData.id);
   }, []);
 
+  // useEffect(() => {
+  //   function handleClickOutside(event) {
+  //     if (drawerRef.current && !drawerRef.current.contains(event.target)) {
+  //       dispatch(setTrigger(false));
+  //     }
+  //   }
+
+  //   // Attach the event listener
+  //   document.addEventListener("click", handleClickOutside);
+
+  //   // Clean up the event listener
+  //   return () => {
+  //     document.removeEventListener("click", handleClickOutside);
+  //   };
+  // }, [ drawerRef]);
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (drawerRef.current && !drawerRef.current.contains(event.target)) {
+        console.log("Outside Drawer");
         dispatch(setTrigger(false));
       }
     }
-    document.addEventListener("click", handleClickOutside);
+
+    // Attach mousedown event to document
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Clean up event listener on unmount
     return () => {
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [drawerRef]);
+  }, [dispatch, drawerRef]);
 
   const {
     background_color,
@@ -157,27 +180,29 @@ function page() {
     setLimg(a);
   }, []);
 
-  const [file, setFile] = useState();
   const [close, setClose] = useState(Clic);
   const [link, setLink] = useState([]);
 
-  console.log(uploadtype)
-
-  const uploaderPics = async () => {
+  const uploaderPics = async (file) => {
     try {
+      setLoad(true)
       if (uploadtype === "image") {
-        await uploadcont()
-        console.log("e")
+        setLoad(true)
+        await uploadcont(file)
+        setLoad(false)
       } else {
-        await backgroundUpload()
-        console.log("gh")
+        setLoad(true)
+        await backgroundUpload(file)
+        setLoad(false)
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      setLoad(false)
     }
   }
 
-  const uploadcont = async () => {
+  const uploadcont = async (file) => {
     try {
       setLoad(true);
       const form = new FormData();
@@ -186,7 +211,7 @@ function page() {
       if (res.data.success) {
         toast.success("Image Uploaded!");
         await getitems();
-        setFile("");
+        // setFile("");
         setLoad(false);
       } else {
         console.log("Error");
@@ -200,7 +225,7 @@ function page() {
     }
   };
 
-  const backgroundUpload = async () => {
+  const backgroundUpload = async (file) => {
     try {
       setLoad(true);
       const form = new FormData();
@@ -209,7 +234,7 @@ function page() {
       if (res.data.success) {
         toast.success("Image Uploaded!");
         await getBackgrounds()
-        setFile("");
+        // setFile("");
         setLoad(false);
       } else {
         console.log("Error");
@@ -287,17 +312,44 @@ function page() {
     }
   });
 
-  const deleteTemp = async () => {
-    try {
-      const res = await axios.delete(`${API}/v1/deletetemp/${id}`);
-      console.log(res.data);
-      if (res.data.success) {
-        toast.success("Template Deleted!");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  // const deleteTemp = async () => {
+  //   try {
+  //     const res = await axios.delete(`${API}/v1/deletetemp/${id}`);
+
+  //     if (res.data.success) {
+  //       toast.success("Template Deleted!");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const deleteTemp = () => {
+    dispatch(setbackground(""))
+    dispatch(setBgImage("https://dn3w8358m09e7.cloudfront.net/def1234.jpeg"))
+    dispatch(setComponent(1));
+    dispatch(setimage("https://dn3w8358m09e7.cloudfront.net/def1234.jpeg"))
+
+    setHeader1("Main long header with several lines")
+    setHeader2("This is subheader. Stormi is a dog. She is dark grey and has long legs. Her eyes are expressive and are able to let her humans know what she is thinking.")
+    dispatch(setFont1(""));
+    setButton1("Click now")
+    dispatch(setFont2(""));
+    dispatch(setFont3(""));
+    dispatch(setReduxActive("h1"))
+    dispatch(setColor1(""))
+    dispatch(setTextColor(""))
+    dispatch(setReduxActive("h2"))
+    dispatch(setColor2(""))
+    dispatch(setReduxActive(""))
+    dispatch(
+      setFonts({
+        Linke: "",
+        fontFamily: "",
+      })
+    );
   };
+
 
   useEffect(() => {
     pic();
@@ -1459,7 +1511,7 @@ function page() {
         setA(canvas.toDataURL());
       });
 
-      console.log(template, "template");
+
 
       localStorage.setItem("image", JSON.stringify([primeimage]));
       localStorage.setItem("bgimage", JSON.stringify([bgimage]));
@@ -1560,12 +1612,19 @@ function page() {
             </div>
           </div>
           <div className="flex justify-center items-center gap-2">
-            <div
+            {/* <div
               onClick={() => deleteTemp()}
               className={` select-none pn:max-sm:hidden text-white px-4 py-1 flex rounded-xl gap-1 mr-2 cursor-pointer font-semibold items-center ${savetemplate ? " bg-[#d03d3d] " : "bg-[#8cec74]"
                 }`}
             >
               <div>Delete Template</div>
+            </div> */}
+            <div
+              onClick={() => deleteTemp()}
+              className={` select-none pn:max-sm:hidden text-white px-4 py-1 flex rounded-xl gap-1 mr-2 cursor-pointer font-semibold items-center ${savetemplate ? " bg-[#d03d3d] " : "bg-[#8cec74]"
+                }`}
+            >
+              <div>Discard</div>
             </div>
             {loading ? (
               <div
@@ -1594,7 +1653,7 @@ function page() {
                   }`}
               >
                 <IoFlashOutline className="font-semibold" />
-                <div>Set Live</div>
+                <div>Go Live</div>
               </div>
             )}
           </div>
@@ -1835,7 +1894,7 @@ function page() {
           <div
             className={` pn:max-sm:hidden ${components
               ? "h-[100%] w-[0px] pn:max-sm:w-[100%]  pn:max-sm:h-[0%] pn:max-sm:fixed duration-300"
-              : "h-[100%] w-[500px] pn:max-sm:w-[100%] pn:max-sm:h-[70%] pn:max-sm:fixed duration-300"
+              : "h-[100%] w-[500px] pn:max-sm:w-[100%]  pn:max-sm:h-[70%] pn:max-sm:fixed duration-300"
               }`}
           >
             <div className="h-[100%] w-[100%] sm:flex sm:flex-row-reverse pn:max-sm:w-[100%] pn:max-sm:h-[100%] pn:max-sm:bg-[#fff] justify-end pn:max-sm:rounded-t-xl">
@@ -1865,7 +1924,7 @@ function page() {
               {component === 1 ? (
                 <div className="h-[100%] w-[98%] pn:max-sm:w-[100%] bg-[#fff] pt-2 flex flex-col items-center pn:max-sm:rounded-t-3xl ">
                   {/* Choose template or styles */}
-                  <div className="bg-[#f1f1f1] h-[6%] w-[90%] relative p-0.5 items-center flex rounded-xl dark:text-[#171717] select-none text-[14px]">
+                  <div className={`bg-[#f1f1f1] h-[6%] w-[90%] relative ${components ? "p-0" : "p-0.5"} items-center flex rounded-xl dark:text-[#171717] select-none text-[14px]`}>
                     <div
                       className={`duration-150 bg-white rounded-xl h-[90%] w-[50%] absolute z-0  ${changetemp === 1 ? "ml-[49%]" : " "
                         }`}
@@ -1874,8 +1933,8 @@ function page() {
                       onClick={() => {
                         setChangetemp(0);
                       }}
-                      className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${changetemp === 0
-                        ? "text-[#868686] "
+                      className={`m-1 z-10  cursor-pointer font-medium ${components && "text-[0px]"} rounded-xl h-[80%] w-[50%] flex justify-center items-center ${changetemp === 0
+                        ? "text-[#000] font-semibold"
                         : "text-[#868686] cursor-pointer font-medium"
                         }`}
                     >
@@ -1885,8 +1944,8 @@ function page() {
                       onClick={() => {
                         setChangetemp(1);
                       }}
-                      className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${changetemp === 1
-                        ? "text-[#868686] "
+                      className={`m-1 z-10 ${components && "text-[0px]"} cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${changetemp === 1
+                        ? "text-[#000] font-semibold"
                         : "text-[#868686] cursor-pointer font-medium"
                         }`}
                     >
@@ -2016,11 +2075,11 @@ function page() {
                       <input
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="bg-[#f7f7f7] text-[#424242] w-[80%] outline-none h-full p-2"
+                        className="bg-[#f7f7f7] text-[#424242] text-sm placeholder:text-sm w-[80%] outline-none h-full p-2"
                         placeholder="Search"
                       />
                       <div className=" w-[10%] bg-[#f7f7f7] h-full">
-                        <MdSearch className="text-[#d1d1d1] w-[100%] h-full" />
+                        <MdSearch className="text-[#d1d1d1] text-sm w-[100%] h-full" />
                       </div>
                     </div>
                     <div className=" border-b-[1px] border-dotted w-[100%] py-1" />
@@ -2036,15 +2095,14 @@ function page() {
                   {/* Choose Image,background or button */}
                   <div className="bg-[#f1f1f1] h-[6%] w-[90%] relative p-0.5 items-center flex rounded-xl dark:text-[#171717] select-none text-[14px]">
                     <div
-                      className={`duration-150 bg-white rounded-xl h-[90%] w-[33.33%] absolute z-0  ${(change === 1 ? "ml-[33.33%]" : "",
-                        change === 2 ? " ml-[65.66%]" : "")
-                        }`}
+                      className={`duration-150 bg-white rounded-xl h-[90%] ${change === 0 && "ml-[0%]"} ${change === 1 && "ml-[33.33%]"} 
+                      ${change === 2 && "ml-[65.66%]"} w-[33.33%] absolute z-0  `}
                     ></div>
                     <div
                       onClick={() => {
                         setChange(0);
                       }}
-                      className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 0 ? "text-[#424242] " : " text-[#424242] "
+                      className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 0 ? "text-[#000] font-semibold" : " text-[#424242] "
                         }`}
                     >
                       Image
@@ -2053,7 +2111,7 @@ function page() {
                       onClick={() => {
                         setChange(1);
                       }}
-                      className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 1 ? "text-[#424242] " : " text-[#424242]  "
+                      className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 1 ? "text-[#000] font-semibold " : " text-[#424242]  "
                         }`}
                     >
                       Background
@@ -2062,7 +2120,7 @@ function page() {
                       onClick={() => {
                         setChange(2);
                       }}
-                      className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 2 ? "text-[#424242]" : " text-[#424242]"
+                      className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 2 ? "text-[#000] font-semibold" : " text-[#424242]"
                         }`}
                     >
                       Button
@@ -2112,13 +2170,13 @@ function page() {
                                       }
                                     }
                                   }}
-                                  className={`flex items-center justify-center w-[140px] h-[140px] ${style.customScrollbar} overflow-auto hover:bg-[#484a52] hover:shadow-lg hover:scale-105 duration-75 select-none cursor-pointer`}
+                                  className={`flex items-center justify-center w-[140px] h-[140px] ${style.customScrollbar} overflow-auto duration-75 select-none cursor-pointer`}
                                 >
                                   <div className="w-[90%] h-[90%] relative">
                                     <img
                                       src={p.link}
                                       alt="pic"
-                                      className="p-2 flex-row flex shadow-lg object-contain h-full w-full rounded-sm "
+                                      className="p-2 flex-row flex object-contain h-full w-full rounded-sm "
                                     />
                                     {data.memberships === "Free" && (
                                       <>
@@ -2160,13 +2218,16 @@ function page() {
                                         }
                                       }
                                     }}
-                                    className={`flex items-center justify-center w-[140px] h-[140px] ${style.customScrollbar} overflow-auto hover:bg-[#28292c] hover:shadow-lg hover:scale-105 duration-75 select-none cursor-pointer bg-slate-200`}
+                                    className={`flex items-center group relative hover:border-[#00f] hover:border-2 justify-center rounded-lg w-[140px] h-[140px] ${style.customScrollbar} overflow-auto  duration-75 select-none cursor-pointer bg-[#fafafa]`}
                                   >
-                                    <div className="w-[90%] h-[90%] relative">
+                                    <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                                      <CiCircleCheck className="text-[#00f]" />
+                                    </div>
+                                    <div className="w-[90%] h-[90%]  relative">
                                       <img
                                         src={p.link}
                                         alt="pic"
-                                        className="p-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-slate-200 "
+                                        className="p-2 flex-row flex  rounded-lg  h-full w-full bg-[#fafafa] "
                                       />
                                       {data.memberships === "Free" && (
                                         <>
@@ -2216,7 +2277,19 @@ function page() {
                     {/* backgrounds */}
                     {change === 1 ? (
                       <div className={`h-[550px] w-[100%]`}>
-                        <Background bgimg={bgimg} />
+                        <div className="bg-[#f7f7f7] border my-2 h-[40px] flex justify-evenly rounded-xl overflow-hidden w-full">
+                          <input
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="bg-[#f7f7f7] text-[#424242] w-[80%] outline-none h-full p-2"
+                            placeholder="Search"
+                          />
+                          <div className=" w-[10%] bg-[#f7f7f7] h-full">
+                            <MdSearch className="text-[#cfcfcf] w-[100%] h-full" />
+                          </div>
+                        </div>
+                        <div className=" border-b-[1px] border-dotted w-[100%] py-1" />
+                        <Background bgimg={bgimg} search={search} />
                       </div>
                     ) : null}
                     {/* Buttons */}
@@ -2287,8 +2360,8 @@ function page() {
                   <div className="h-[80%] w-[90%] justify-evenly mt-4">
                     {/* Image */}
                     <div className="h-[550px] w-[100%]">
-                      {console.log(file, "render file")}
-                      <div className=" items-center flex justify-center">
+
+                      {/* <div className=" items-center flex justify-center">
                         <div className="grid bg-[#f4f4f4] text-[#424242] w-full grid-col-1 gap-3 p-4 rounded-xl">
                           <div className="font-semibold ">Upload {uploadtype === "image" ? "Photo" : "Background Images"}</div>
                           <input
@@ -2352,12 +2425,69 @@ function page() {
                             </>
                           )}
                         </div>
-                      </div>
-                      <div className="border-b-[0.5px] w-full border-dotted mt-2"></div>
-                      <div className={`flex flex-col max-h-[400px] ${style.customScrollbar} overflow-auto`}>
-                        <div className="flex justify-between w-full mt-3 gap-3 items-center">
+                      </div> */}
+
+                      {/* <div className="border-b-[0.5px] w-full border-dotted mt-2"></div> */}
+                      <div className={`flex flex-col max-h-[90vh] min-h-[90vh] overflow-y-scroll no-scrollbar`}>
+                        {/* <div className="flex justify-between w-full gap-3 items-center">
                           <div onClick={() => setUploadtype("image")} className={`w-full ${uploadtype === "image" ? "border-b-2 border-blue-500" : ""}  pb-1 flex text-[#9c9c9c] font-medium justify-center items-center text-sm `}>Images</div>
                           <div onClick={() => setUploadtype("background")} className={`w-full ${uploadtype === "background" ? "border-b-2 border-blue-500" : ""} pb-1 flex text-[#9c9c9c] font-medium justify-center items-center text-sm `}>Background Images</div>
+                        </div> */}
+
+                        <div className="bg-[#f1f1f1] relative p-0.5 items-center flex rounded-xl dark:text-[#171717] select-none text-[14px]">
+                          <div
+                            className={`duration-150 bg-white rounded-xl h-[90%] w-[50%] absolute z-0  ${uploadtype === "background" ? "ml-[49%]" : " "
+                              }`}
+                          ></div>
+                          <div
+                            onClick={() => setUploadtype("image")}
+                            className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${uploadtype === "image"
+                              ? "text-[#000] font-semibold"
+                              : "text-[#868686] cursor-pointer font-medium"
+                              }`}
+                          >
+                            Images
+                          </div>
+                          <div
+                            onClick={() => setUploadtype("background")}
+                            className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${uploadtype === "background"
+                              ? "text-[#000] font-semibold"
+                              : "text-[#868686] cursor-pointer font-medium"
+                              }`}
+                          >
+                            Background
+                          </div>
+                        </div>
+
+                        <div className="my-3">
+                          <input
+                            type="file"
+                            name="myFile"
+                            id="fileInput"
+                            placeholder="Upload file"
+                            onChange={(e) =>
+                              uploaderPics(e.target.files[0])
+                              //  setFile()
+                            }
+                            className="w-[100%] self-start hidden text-[#424242]"
+                          />
+                          <label
+                            htmlFor="fileInput"
+                          >
+                            {load ? <button
+                              className="bg-blue-800 p-2 flex justify-center w-full text-center  items-center text-white px-5 rounded-xl font-semibold"
+                              disabled
+                            >
+                              <div className="animate-spin">
+                                <AiOutlineLoading3Quarters />
+                              </div>
+                            </button> : <div
+                              className="bg-blue-800 p-2 text-center text-white px-5 w-full rounded-xl font-semibold"
+
+                            >
+                              Upload
+                            </div>}
+                          </label>
                         </div>
                         {
                           uploadtype === "image" ?
@@ -2365,7 +2495,7 @@ function page() {
                               <div className="text-[#9c9c9c] font-medium text-[14px] mt-2">
                                 Uploaded Images
                               </div>
-                              <div className="h-[350px] w-[290px] pn:max-sm:w-[100%] ">
+                              <div className=" w-[290px] pn:max-sm:w-[100%] ">
                                 <div
                                   className={`w-[100%] pn:max-sm:w-[100%] grid grid-cols-2 h-[100%]`}
                                 >
@@ -2376,13 +2506,16 @@ function page() {
                                         onClick={() => {
                                           dispatch(setimage(m));
                                         }}
-                                        className="flex items-center justify-center w-[130px] mt-1 h-[130px] hover:bg-[#28292c] hover:shadow-lg hover:scale-105 duration-75 select-none cursor-pointer bg-slate-200"
+                                        className="flex items-center rounded-xl relative group hover:border hover:border-[#00f] justify-center w-[130px] mt-1 h-[130px] duration-75 select-none cursor-pointer bg-[#fafafa]"
                                       >
-                                        <div className="w-[90%] h-[90%]">
+                                        <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                                          <CiCircleCheck className="text-[#00f]" />
+                                        </div>
+                                        <div className="w-[90%] h-[90%]  rounded-xl">
                                           <img
                                             src={m}
                                             alt="pic"
-                                            className="p-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-slate-200 "
+                                            className="p-2 flex-row flex h-full  rounded-xl w-full bg-[#fafafa] "
                                           />
                                         </div>
                                       </div>
@@ -2404,13 +2537,16 @@ function page() {
                                         onClick={() => {
                                           dispatch(setBgImage(m));
                                         }}
-                                        className="flex items-center justify-center w-[130px] mt-1 h-[130px] hover:bg-[#28292c] hover:shadow-lg hover:scale-105 duration-75 select-none cursor-pointer bg-slate-200"
+                                        className="flex items-center justify-center w-[130px] relative group hover:border hover:border-[#00f] rounded-xl mt-1 h-[130px] duration-75 select-none cursor-pointer bg-[#fafafa]"
                                       >
-                                        <div className="w-[90%] h-[90%]">
+                                        <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                                          <CiCircleCheck className="text-[#00f]" />
+                                        </div>
+                                        <div className="w-[90%] h-[90%] rounded-xl">
                                           <img
                                             src={m}
                                             alt="pic"
-                                            className="p-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-slate-200 "
+                                            className="p-2 flex-row flex rounded-xl h-full w-full bg-[#fafafa] "
                                           />
                                         </div>
                                       </div>
@@ -2418,12 +2554,7 @@ function page() {
                                 </div>
                               </div>
                             </div>
-
                         }
-
-
-
-
                       </div>
                     </div>
                     {/* backgrounds */}
@@ -2436,7 +2567,7 @@ function page() {
                   <div className="w-[100%] h-[100%] text-[#424242] p-1">
                     <div className="flex flex-col my-2 gap-1">
                       <div className="font-medium pl-2">
-                        <div>Advance options</div>
+                        <div>Advanced options</div>
                       </div>
                       <div className="border-b-[0.5px] border-dotted" />
                       <div className="flex flex-col gap-4 px-2 my-3">
@@ -2526,11 +2657,11 @@ function page() {
                         </div>
                         <div className="flex flex-col w-full">
                           <div className="font-semibold">
-                            Contant information
+                            Contact information
                           </div>
                           <div className="flex w-full justify-between items-center">
                             <div className="text-sm max-w-[90%] font-medium text-[#9c9c9c]">
-                              Display your Contant to public
+                              Display your Contact to public
                             </div>
                             <div>
                               {perf.contact ? (
@@ -2551,13 +2682,22 @@ function page() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex flex-col w-full">
+                        {/* <div className="flex flex-col w-full">
                           <div
                             onClick={() => deleteTemp()}
                             className={`sm:hidden select-none justify-center text-white px-4 py-1 flex rounded-xl gap-1 mr-2 cursor-pointer font-semibold items-center ${savetemplate ? " bg-[#d03d3d] " : "bg-[#8cec74]"
                               }`}
                           >
                             <div>Delete Template</div>
+                          </div>
+                        </div> */}
+                        <div className="flex flex-col w-full">
+                          <div
+                            onClick={() => deleteTemp()}
+                            className={`sm:hidden select-none justify-center text-white px-4 py-1 flex rounded-xl gap-1 mr-2 cursor-pointer font-semibold items-center ${savetemplate ? " bg-[#d03d3d] " : "bg-[#8cec74]"
+                              }`}
+                          >
+                            <div>Discard</div>
                           </div>
                         </div>
 
@@ -2597,7 +2737,7 @@ function page() {
                           setChangetemp(0);
                         }}
                         className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${changetemp === 0
-                          ? "text-[#868686] "
+                          ? "text-[#000] font-semibold "
                           : "text-[#868686] cursor-pointer font-medium"
                           }`}
                       >
@@ -2608,7 +2748,7 @@ function page() {
                           setChangetemp(1);
                         }}
                         className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${changetemp === 1
-                          ? "text-[#868686] "
+                          ? "text-[#000] font-semibold"
                           : "text-[#868686] cursor-pointer font-medium"
                           }`}
                       >
@@ -2617,17 +2757,18 @@ function page() {
                     </div>
 
                     <div
-                      className={`h-[80%] w-[90%] justify-evenly ${style.customScrollbar} overflow-auto mt-4`}
+                      className={`h-[80%] w-[90%] justify-evenly ${style.customScrollbar}  overflow-auto mt-4`}
                     >
                       {/* Templates */}
                       {changetemp === 0 ? (
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-2  gap-2">
                           {/* {temp && <img src={temp} alt="image" />} */}
                           <Image
                             src={t1}
                             onClick={() => {
                               // setTemplate(1);
                               dispatch(setTemplate(1));
+                              dispatch(setTrigger(false))
                             }}
                             className="w-[100%] hover:bg-[#28292c] hover:shadow-lg duration-75 h-[100px] bg-[#f7f7f7] p-1 my-2"
                           />
@@ -2636,6 +2777,7 @@ function page() {
                             onClick={() => {
                               // setTemplate(2);
                               dispatch(setTemplate(2));
+                              dispatch(setTrigger(false))
                             }}
                             className="w-[100%] h-[100px] hover:bg-[#28292c] hover:shadow-lg duration-75 bg-[#f7f7f7] p-1 my-2"
                           />
@@ -2644,6 +2786,7 @@ function page() {
                             onClick={() => {
                               // setTemplate(3);
                               dispatch(setTemplate(3));
+                              dispatch(setTrigger(false))
                             }}
                             className="w-[100%] h-[100px] hover:bg-[#28292c] hover:shadow-lg duration-75 bg-[#f7f7f7] p-1 my-2"
                           />
@@ -2652,6 +2795,7 @@ function page() {
                             onClick={() => {
                               // setTemplate(4);
                               dispatch(setTemplate(4));
+                              dispatch(setTrigger(false))
                             }}
                             className="w-[100%] h-[100px] hover:bg-[#28292c] hover:shadow-lg duration-75 bg-[#f7f7f7] p-1 my-2"
                           />
@@ -2660,6 +2804,7 @@ function page() {
                             onClick={() => {
                               // setTemplate(5);
                               dispatch(setTemplate(5));
+                              dispatch(setTrigger(false))
                             }}
                             className="w-[100%] h-[100px] hover:bg-[#28292c] hover:shadow-lg duration-75 bg-[#f7f7f7] p-1 my-2"
                           />
@@ -2737,11 +2882,11 @@ function page() {
                         <input
                           value={search}
                           onChange={(e) => setSearch(e.target.value)}
-                          className="bg-[#f7f7f7] text-[#424242] w-[80%] outline-none h-full p-2"
+                          className="bg-[#f7f7f7] text-[#424242] text-sm placeholder:text-sm  w-[80%] outline-none h-full p-2"
                           placeholder="Search"
                         />
                         <div className=" w-[10%] bg-[#f7f7f7] h-full">
-                          <MdSearch className="text-[#d1d1d1] w-[100%] h-full" />
+                          <MdSearch className="text-[#d1d1d1] text-sm w-[100%] h-full" />
                         </div>
                       </div>
                       <div className=" border-b-[1px] border-dotted w-[100%] py-1" />
@@ -2756,15 +2901,14 @@ function page() {
                     {/* Choose Image,background or button */}
                     <div className="bg-[#f1f1f1] h-[6%] w-[90%] mt-2 relative p-0.5 items-center flex rounded-xl dark:text-[#171717] select-none text-[14px]">
                       <div
-                        className={`duration-150 bg-white rounded-xl h-[90%] w-[33.33%] absolute z-0  ${(change === 1 ? "ml-[33.33%]" : "",
-                          change === 2 ? " ml-[65.66%]" : "")
-                          }`}
+                        className={`duration-150 bg-white rounded-xl h-[90%] w-[33.33%] absolute z-0 ${change === 0 && "ml-[0%]"} ${change === 1 && "ml-[33.33%]"} 
+                        ${change === 2 && "ml-[65.66%]"}`}
                       ></div>
                       <div
                         onClick={() => {
                           setChange(0);
                         }}
-                        className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 0 ? "text-[#424242] " : " text-[#424242] "
+                        className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 0 ? "text-[#000] font-semibold " : " text-[#424242]"
                           }`}
                       >
                         Image
@@ -2773,7 +2917,7 @@ function page() {
                         onClick={() => {
                           setChange(1);
                         }}
-                        className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 1 ? "text-[#424242] " : " text-[#424242]  "
+                        className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 1 ? "text-[#000] font-semibold " : " text-[#424242]  "
                           }`}
                       >
                         Background
@@ -2782,7 +2926,7 @@ function page() {
                         onClick={() => {
                           setChange(2);
                         }}
-                        className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 2 ? "text-[#424242]" : " text-[#424242]"
+                        className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 2 ? "text-[#000] font-semibold" : " text-[#424242]"
                           }`}
                       >
                         Button
@@ -2792,7 +2936,7 @@ function page() {
                       {/* Image */}
                       {change === 0 ? (
                         <div className="h-[510px] w-[100%] ">
-                          <div className="bg-[#f7f7f7] border my-2 h-[40px] flex justify-evenly rounded-xl overflow-hidden w-full">
+                          <div className="bg-[#f7f7f7] border my-2 h-[40px] text-sm placeholder:text-sm flex justify-evenly rounded-xl overflow-hidden w-full">
                             <input
                               value={search}
                               onChange={(e) => setSearch(e.target.value)}
@@ -2800,11 +2944,11 @@ function page() {
                               placeholder="Search"
                             />
                             <div className=" w-[10%] bg-[#f7f7f7] h-full">
-                              <MdSearch className="text-[#cfcfcf] w-[100%] h-full" />
+                              <MdSearch className="text-[#cfcfcf] text-sm w-[100%] h-full" />
                             </div>
                           </div>
                           <div
-                            className={`w-[100%] pn:max-sm:w-[100%] grid grid-cols-2 ${style.customScrollbar} overflow-auto h-[100%]`}
+                            className={`w-[100%] pn:max-sm:w-[100%] gap-3 grid grid-cols-2 ${style.customScrollbar} overflow-auto h-[100%]`}
                           >
                             {search ? (
                               pic1.length > 0 &&
@@ -2821,16 +2965,20 @@ function page() {
                                       if (!p.premium) {
                                         dispatch(setimage(p.link));
                                       } else {
-                                        console.log("Aukat nhi Use Krne ki");
+                                        console.log("membership");
                                       }
+                                      dispatch(setTrigger(false))
                                     }}
-                                    className={`flex items-center justify-center w-[140px] h-[140px] ${style.customScrollbar} overflow-auto hover:bg-[#28292c] hover:shadow-lg hover:scale-105 duration-75 select-none cursor-pointer bg-slate-200`}
+                                    className={`flex items-center justify-center w-[140px] h-[140px] ${style.customScrollbar}  relative group hover:border hover:border-[#00f]  overflow-auto duration-75 select-none cursor-pointer bg-[#fafafa]`}
                                   >
-                                    <div className="w-[90%] h-[90%] relative">
+                                    <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                                      <CiCircleCheck className="text-[#00f]" />
+                                    </div>
+                                    <div className="w-[100%] h-[100%] relative">
                                       <img
                                         src={p.link}
                                         alt="pic"
-                                        className="p-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-slate-200 "
+                                        className="p-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-[#fafafa] "
                                       />
                                       {p.premium && (
                                         <div className="absolute bottom-2 right-2 flex justify-center items-end">
@@ -2838,7 +2986,7 @@ function page() {
                                             className=" bg-[#171717] 
                                   p-1 rounded-full self-end flex "
                                           >
-                                            <FaCrown className=" text-orange-300 " />
+                                            <FaCrown className="text-orange-300 " />
                                           </div>
                                         </div>
                                       )}
@@ -2862,14 +3010,18 @@ function page() {
                                             setRemovePremium({ type: "image" })
                                           );
                                         }
+                                        dispatch(setTrigger(false))
                                       }}
-                                      className={`flex items-center justify-center w-[140px] h-[140px] ${style.customScrollbar} overflow-auto hover:bg-[#28292c] hover:shadow-lg hover:scale-105 duration-75 select-none cursor-pointer bg-slate-200`}
+                                      className={`flex items-center justify-center  relative group hover:border hover:border-[#00f]  w-[140px] h-[140px] ${style.customScrollbar} overflow-auto duration-75 select-none cursor-pointer bg-[#fafafa] `}
                                     >
-                                      <div className="w-[90%] h-[90%] relative">
+                                      <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                                        <CiCircleCheck className="text-[#00f]" />
+                                      </div>
+                                      <div className="w-[100%] h-[100%] relative">
                                         <img
                                           src={p.link}
                                           alt="pic"
-                                          className="p-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-slate-200 "
+                                          className="p-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-[#fafafa] "
                                         />
                                         {p.premium && (
                                           <div className="absolute bottom-2 right-2 flex justify-center items-end">
@@ -2914,6 +3066,18 @@ function page() {
                       {/* backgrounds */}
                       {change === 1 ? (
                         <div className={`h-[550px] w-[100%]`}>
+                          <div className="bg-[#f7f7f7] border my-2 h-[40px] flex justify-evenly rounded-xl overflow-hidden w-full">
+                            <input
+                              value={search}
+                              onChange={(e) => setSearch(e.target.value)}
+                              className="bg-[#f7f7f7] text-[#424242] w-[80%] outline-none h-full p-2"
+                              placeholder="Search"
+                            />
+                            <div className=" w-[10%] bg-[#f7f7f7] h-full">
+                              <MdSearch className="text-[#cfcfcf] w-[100%] h-full" />
+                            </div>
+                          </div>
+                          <div className=" border-b-[1px] border-dotted w-[100%] py-1" />
                           <Background bgimg={bgimg} />
                         </div>
                       ) : null}
@@ -2986,7 +3150,7 @@ function page() {
                     <div className="h-[80%] w-[90%] justify-evenly mt-4">
                       {/* Image */}
                       <div className="h-[550px] w-[100%]">
-                        <div className=" items-center flex justify-center">
+                        {/* <div className=" items-center flex justify-center">
                           <div className="grid bg-[#f4f4f4] text-[#424242] w-full grid-col-1 gap-3 p-4 rounded-xl">
                             <div className="font-semibold ">Upload {uploadtype === "image" ? "Photo" : "Background Image"}</div>
                             <input
@@ -2994,11 +3158,14 @@ function page() {
                               name="myFile"
                               id="fileInput"
                               placeholder="Upload file"
-                              onChange={(e) => setFile(e.target.files[0])}
+                              onChange={(e) => { setFile(e.target.files[0]); dispatch(setTrigger(true)) }}
                               className="w-[100%] self-start hidden text-[#424242]"
                             />
                             {file ? (
-                              <div className="w-full flex justify-center items-center ">
+                              <div className="w-full relative flex justify-center items-center ">
+                                <div onClick={() => setFile("")} className="absolute  top-1 px-2 right-0">
+                                  <RxCross2 className="text-xl font-semibold" />
+                                </div>
                                 <Image
                                   src={URL.createObjectURL(file)}
                                   alt="upload"
@@ -3046,7 +3213,7 @@ function page() {
                               </>
                             )}
                           </div>
-                        </div>
+                        </div> */}
                         {/* <div className="text-[#424242] mt-2">
                           Uploaded Images
                         </div>
@@ -3076,10 +3243,61 @@ function page() {
                         </div> */}
 
 
-                        <div className={`flex flex-col max-h-[400px] ${style.customScrollbar} overflow-auto`}>
-                          <div className="flex justify-between w-full mt-3 gap-3 items-center">
-                            <div onClick={() => setUploadtype("image")} className={`w-full ${uploadtype === "image" ? "border-b-2 border-blue-500" : ""}  pb-1 flex text-[#9c9c9c] font-medium justify-center items-center text-sm `}>Images</div>
-                            <div onClick={() => setUploadtype("background")} className={`w-full ${uploadtype === "background" ? "border-b-2 border-blue-500" : ""} pb-1 flex text-[#9c9c9c] font-medium justify-center items-center text-sm `}>Background Images</div>
+                        <div className={`flex flex-col max-h-[400px] $ overflow-y-scroll no-scrollbar`}>
+
+                          <div className="bg-[#f1f1f1] relative p-0.5 items-center flex rounded-xl dark:text-[#171717] select-none text-[14px]">
+                            <div
+                              className={`duration-150 bg-white rounded-xl h-[90%] w-[50%] absolute z-0  ${uploadtype === "background" ? "ml-[49%]" : " "
+                                }`}
+                            ></div>
+                            <div
+                              onClick={() => setUploadtype("image")}
+                              className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${uploadtype === "image"
+                                ? "text-[#000] font-semibold"
+                                : "text-[#868686] cursor-pointer font-medium"
+                                }`}
+                            >
+                              Images
+                            </div>
+                            <div
+                              onClick={() => setUploadtype("background")}
+                              className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${uploadtype === "background"
+                                ? "text-[#000] font-semibold"
+                                : "text-[#868686] cursor-pointer font-medium"
+                                }`}
+                            >
+                              Background
+                            </div>
+                          </div>
+                          <div className="my-3">
+                            <input
+                              type="file"
+                              name="myFile"
+                              id="fileInput"
+                              placeholder="Upload file"
+                              onChange={(e) =>
+                                uploaderPics(e.target.files[0])
+                                //  setFile()
+                              }
+                              className="w-[100%] self-start hidden text-[#424242]"
+                            />
+                            <label
+                              htmlFor="fileInput"
+                            >
+                              {load ? <button
+                                className="bg-blue-800 p-2 flex justify-center w-full text-center items-center text-white px-5 rounded-xl font-semibold"
+                                disabled
+                              >
+                                <div className="animate-spin">
+                                  <AiOutlineLoading3Quarters />
+                                </div>
+                              </button> : <div
+                                className="bg-blue-800 p-2 text-center text-white px-5 w-full rounded-xl font-semibold"
+
+                              >
+                                Upload
+                              </div>}
+                            </label>
                           </div>
                           {
                             uploadtype === "image" ?
@@ -3097,14 +3315,18 @@ function page() {
                                           key={i}
                                           onClick={() => {
                                             dispatch(setimage(m));
+                                            dispatch(setTrigger(false))
                                           }}
-                                          className="flex items-center justify-center w-[130px] mt-1 h-[130px] hover:bg-[#28292c] hover:shadow-lg hover:scale-105 duration-75 select-none cursor-pointer bg-slate-200"
+                                          className="flex items-center justify-center w-[130px] mt-1 relative group hover:border hover:border-[#00f] rounded-xl h-[130px] duration-75 select-none cursor-pointer bg-[#fafafa]"
                                         >
-                                          <div className="w-[90%] h-[90%]">
+                                          <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                                            <CiCircleCheck className="text-[#00f]" />
+                                          </div>
+                                          <div className="w-[90%] h-[90%] rounded-xl">
                                             <img
                                               src={m}
                                               alt="pic"
-                                              className="p-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-slate-200 "
+                                              className="p-2 flex-row flex  rounded-xl h-full w-full  bg-[#fafafa] "
                                             />
                                           </div>
                                         </div>
@@ -3117,22 +3339,27 @@ function page() {
                                 </div>
                                 <div className="h-[350px] w-[290px] pn:max-sm:w-[100%] ">
                                   <div
-                                    className={`w-[100%] pn:max-sm:w-[100%] grid grid-cols-2 h-[100%]`}
+                                    className={`w-[100%]  pn:max-sm:w-[100%] grid grid-cols-2 h-[100%]`}
                                   >
+
                                     {blinks &&
                                       blinks.map((m, i) => (
                                         <div
                                           key={i}
                                           onClick={() => {
                                             dispatch(setBgImage(m));
+                                            dispatch(setTrigger(false))
                                           }}
-                                          className="flex items-center justify-center w-[130px] mt-1 h-[130px] hover:bg-[#28292c] hover:shadow-lg hover:scale-105 duration-75 select-none cursor-pointer bg-slate-200"
+                                          className="flex items-center justify-center relative group hover:border hover:border-[#00f] w-[130px] mt-1 h-[130px] duration-75 select-none cursor-pointer bg-[#fafafa]"
                                         >
+                                          <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                                            <CiCircleCheck className="text-[#00f]" />
+                                          </div>
                                           <div className="w-[90%] h-[90%]">
                                             <img
                                               src={m}
                                               alt="pic"
-                                              className="p-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-slate-200 "
+                                              className="p-2 flex-row flex h-full w-full  rounded-xl bg-[#fafafa] "
                                             />
                                           </div>
                                         </div>
@@ -3154,12 +3381,13 @@ function page() {
                   </div>
                 ) : null}
                 {/* adv options */}
+                {/* moible */}
                 {component === 5 ? (
-                  <div className="h-[100%] select-none w-[98%] pn:max-sm:w-[100%] bg-[#fff] flex flex-col items-center pn:max-sm:rounded-t-3xl">
+                  <div className="h-[100%] select-none w-[98%] pn:max-sm:w-[100%] flex flex-col items-center pn:max-sm:rounded-t-3xl">
                     <div className="w-[100%] h-[100%] text-[#424242] p-1">
                       <div className="flex flex-col my-2 gap-1">
                         <div className="font-medium pl-2">
-                          <div>Advance options</div>
+                          <div>Advanced options</div>
                         </div>
                         <div className="border-b-[0.5px] border-dotted" />
                         <div className="flex flex-col gap-4 px-2 my-3">
@@ -3249,11 +3477,11 @@ function page() {
                           </div>
                           <div className="flex flex-col w-full">
                             <div className="font-semibold">
-                              Contant information
+                              Contact information
                             </div>
                             <div className="flex w-full justify-between items-center">
                               <div className="text-sm max-w-[90%] font-medium text-[#9c9c9c]">
-                                Display your Contant to public
+                                Display your Contact to public
                               </div>
                               <div>
                                 {perf.contact ? (
@@ -3278,13 +3506,22 @@ function page() {
                               </div>
                             </div>
                           </div>
-                          <div className="flex flex-col w-full">
+                          {/* <div className="flex flex-col w-full">
                             <div
                               onClick={() => deleteTemp()}
                               className={`sm:hidden select-none justify-center text-white px-4 py-1 flex rounded-xl gap-1 mr-2 cursor-pointer font-semibold items-center ${savetemplate ? " bg-[#d03d3d] " : "bg-[#8cec74]"
                                 }`}
                             >
                               <div>Delete Template</div>
+                            </div>
+                          </div> */}
+                          <div className="flex flex-col w-full">
+                            <div
+                              onClick={() => deleteTemp()}
+                              className={`sm:hidden select-none justify-center text-white px-4 py-1 flex rounded-xl gap-1 mr-2 cursor-pointer font-semibold items-center ${savetemplate ? " bg-[#d03d3d] " : "bg-[#8cec74]"
+                                }`}
+                            >
+                              <div>Discard</div>
                             </div>
                           </div>
 
@@ -3300,23 +3537,7 @@ function page() {
 	<div>Add a new</div>
   </div> */}
                         </div>
-                        <div>
-                          {perf.store ? (
-                            <LiaToggleOnSolid
-                              className="text-2xl"
-                              onClick={() =>
-                                dispatch(setPerf({ parameter: "store" }))
-                              }
-                            />
-                          ) : (
-                            <LiaToggleOffSolid
-                              className="text-2xl"
-                              onClick={() =>
-                                dispatch(setPerf({ parameter: "store" }))
-                              }
-                            />
-                          )}
-                        </div>
+
                       </div>
                     </div>
                   </div>

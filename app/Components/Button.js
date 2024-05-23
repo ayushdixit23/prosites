@@ -5,34 +5,41 @@ import {
   setPremium,
   setRemovePremium,
   setbuttoncss,
+  setTrigger
 } from "../redux/reducer/prosite_data";
 import axios from "axios";
 import { APIPRO } from "@/Essentials";
 import { FaCrown } from "react-icons/fa6";
 import style from "../pages/CustomScrollbar.module.css";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { CiCircleCheck } from "react-icons/ci";
 
 function Button() {
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
+  const [loading, setLoading] = useState(true)
+
   useEffect(() => {
     const data = sessionStorage.getItem("data");
     const parseData = JSON.parse(data);
     setTitle(parseData?.memberships);
   }, []);
 
-  // const [isHovered, setIsHovered] = useState(false);
   const [but, setBut] = useState([]);
+
   const Buttons = async () => {
     try {
+      setLoading(true)
       const res = await axios.get(`${APIPRO}/getbuttons`);
-
       setBut(res.data);
     } catch (e) {
       console.log("Items not fetched");
     }
   };
+
   useEffect(() => {
     Buttons();
+    setLoading(false)
   }, []);
   // const handleMouseEnter = () => {
   //   setIsHovered(true);
@@ -43,17 +50,62 @@ function Button() {
   // };
 
   return (
-    <div
-      className={`h-[50vh] select-none w-full grid grid-cols-2 overflow-auto mt-2 ${style.customScrollbar}`}
-    >
-      {but.map((b, i) => (
-        <div className="flex items-center relative justify-center w-[96%] h-[100px] overflow-auto mt-2 hover:bg-[#28292c] hover:shadow-lg hover:scale-105 duration-75 select-none cursor-pointer bg-slate-200">
-          <div
-            key={i}
-            onClick={() => {
-              console.log(b.padding);
-              dispatch(
-                setbuttoncss({
+    <>
+      {loading ? <div className="flex justify-center  h-[30vh] w-[100%] items-center">
+        <div className="animate-spin">
+          <AiOutlineLoading3Quarters />
+        </div>
+      </div> :
+        <div
+          className={`h-[50vh] select-none w-full grid grid-cols-2 overflow-auto mt-2 ${style.customScrollbar}`}
+        >
+          {but.map((b, i) => (
+            <div className="flex items-center  group hover:border hover:border-[#00f]  relative justify-center rounded-xl w-[96%] h-[100px] overflow-auto mt-2 bg-[#fafafa] duration-75 select-none cursor-pointer ">
+              <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                <CiCircleCheck className="text-[#00f]" />
+              </div>
+              <div
+                key={i}
+                onClick={() => {
+                  console.log(b.padding);
+                  dispatch(
+                    setbuttoncss({
+                      padding: b?.padding,
+                      color: b?.color,
+                      borderRadius: b?.borderRadius,
+                      borderStyle: b?.borderStyle,
+                      backgroundColor: b?.backgroundColor,
+                      borderColor: b?.borderColor,
+                      borderTop: b?.borderTop,
+                      borderBottom: b?.borderBottom,
+                      borderRight: b?.borderRight,
+                      borderLeft: b?.borderLeft,
+                      borderRadiusTop: b?.borderRadiusTop,
+                      borderRadiusBottom: b?.borderRadiusBottom,
+                      borderRadiusRight: b?.borderRadiusRight,
+                      borderRadiusLeft: b?.borderRadiusLeft,
+                      boxShadow: b?.boxShadow,
+                      fontBold: b?.fontBold,
+                    })
+                  );
+                  if (b.premium) {
+                    if (title === "Free") {
+                      dispatch(setPremium({ type: "buttons" }));
+                    }
+                  } else {
+                    if (title === "Free") {
+                      dispatch(setRemovePremium({ type: "buttons" }));
+                    }
+                  }
+                  dispatch(setTrigger(false))
+                  // setButton(1);
+                  // setBorder(2);
+                  // setBgbutton("#BC3433");
+                  // setRound(10);
+                }}
+                // onMouseEnter={handleMouseEnter}
+                // onMouseLeave={handleMouseLeave}
+                style={{
                   padding: b?.padding,
                   color: b?.color,
                   borderRadius: b?.borderRadius,
@@ -70,67 +122,34 @@ function Button() {
                   borderRadiusLeft: b?.borderRadiusLeft,
                   boxShadow: b?.boxShadow,
                   fontBold: b?.fontBold,
-                })
-              );
-              if (b.premium) {
-                if (title === "Free") {
-                  dispatch(setPremium({ type: "buttons" }));
-                }
-              } else {
-                if (title === "Free") {
-                  dispatch(setRemovePremium({ type: "buttons" }));
-                }
-              }
-              // setButton(1);
-              // setBorder(2);
-              // setBgbutton("#BC3433");
-              // setRound(10);
-            }}
-            // onMouseEnter={handleMouseEnter}
-            // onMouseLeave={handleMouseLeave}
-            style={{
-              padding: b?.padding,
-              color: b?.color,
-              borderRadius: b?.borderRadius,
-              borderStyle: b?.borderStyle,
-              backgroundColor: b?.backgroundColor,
-              borderColor: b?.borderColor,
-              borderTop: b?.borderTop,
-              borderBottom: b?.borderBottom,
-              borderRight: b?.borderRight,
-              borderLeft: b?.borderLeft,
-              borderRadiusTop: b?.borderRadiusTop,
-              borderRadiusBottom: b?.borderRadiusBottom,
-              borderRadiusRight: b?.borderRadiusRight,
-              borderRadiusLeft: b?.borderRadiusLeft,
-              boxShadow: b?.boxShadow,
-              fontBold: b?.fontBold,
-            }}
-            // className="px-4 py-2 shadow-lg rounded-sm bg-white text-black self-start"
-          >
-            Click Now
-          </div>
+                }}
+              // className="px-4 py-2 shadow-lg rounded-sm bg-white text-black self-start"
+              >
+                Click Now
+              </div>
 
-          {title === "Free" && (
-            <>
-              {" "}
-              {b.premium && (
-                <div>
-                  <div className="absolute bottom-2 right-2 flex justify-center items-end">
-                    <div
-                      className=" bg-[#171717] 
+              {title === "Free" && (
+                <>
+                  {" "}
+                  {b.premium && (
+                    <div>
+                      <div className="absolute bottom-2 right-2 flex justify-center items-end">
+                        <div
+                          className=" bg-[#171717] 
                   p-1 rounded-full self-end flex "
-                    >
-                      <FaCrown className=" text-orange-300 " />
+                        >
+                          <FaCrown className=" text-orange-300 " />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  )}
+                </>
               )}
-            </>
-          )}
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
+      }
+    </>
   );
 }
 
