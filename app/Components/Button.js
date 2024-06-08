@@ -18,6 +18,7 @@ function Button() {
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(true)
+  const [bid, setBid] = useState("")
 
   useEffect(() => {
     const data = sessionStorage.getItem("data");
@@ -60,14 +61,15 @@ function Button() {
           className={`h-[50vh] select-none w-full grid grid-cols-2 overflow-auto mt-2 ${style.customScrollbar}`}
         >
           {but.map((b, i) => (
-            <div className="flex items-center  group hover:border hover:border-[#00f]  relative justify-center rounded-xl w-[96%] h-[100px] overflow-auto mt-2 bg-[#fafafa] duration-75 select-none cursor-pointer ">
-              <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+            <div className={`flex items-center  group hover:border hover:border-[#00f]  relative justify-center rounded-xl w-[96%] h-[100px] overflow-auto mt-2 bg-[#fafafa] duration-75 select-none cursor-pointer ${b?._id === bid ? "border border-[#00f]" : null}`}>
+              {bid === b?._id && < div className={` absolute z-10 bottom-1 right-1`}>
                 <CiCircleCheck className="text-[#00f]" />
-              </div>
+              </div>}
+
               <div
                 key={i}
                 onClick={() => {
-                  console.log(b.padding);
+                  setBid(b?._id)
                   dispatch(
                     setbuttoncss({
                       padding: b?.padding,
@@ -147,7 +149,7 @@ function Button() {
               )}
             </div>
           ))}
-        </div>
+        </div >
       }
     </>
   );

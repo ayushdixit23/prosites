@@ -35,6 +35,7 @@ function Styles({ search }) {
   const { active, textcolor } = useSelector((state) => state.prosite_data);
   const [color, setColor] = useColor("");
   const [clickk, setClickk] = useState(false);
+  const [selectedfont, setSelectedFont] = useState("")
   const [loading, setLoading] = useState(true)
 
   const Fonts = async () => {
@@ -99,7 +100,7 @@ function Styles({ search }) {
       </div>
       <div className="text-[#979797] text-[14px] font-medium my-1">Fonts</div>
       <div
-        className={`h-[100%] ${style.customScrollbar} max-h-[65vh] select-none w-full grid ${loading ? "grid-cols-1" : "grid-cols-2"}  overflow-auto `}
+        className={`h-[100%] ${style.customScrollbar} ${active ? "max-h-[45vh]" : "max-h-[65vh]"}  select-none w-full grid ${loading ? "grid-cols-1" : "grid-cols-2"}  overflow-auto `}
       >
         {search ? (
           <>
@@ -110,22 +111,35 @@ function Styles({ search }) {
               .map((d, i) => (
                 <div
                   key={i}
-                  className="flex w-[96%] h-[100px] mt-2  duration-75 relative group hover:border hover:border-[#00f] rounded-xl justify-center items-center select-none cursor-pointer bg-[#fafafa]"
+                  className={`flex w-[96%] h-[100px] mt-2 relative group hover:border hover:border-[#00f] duration-75 justify-center rounded-xl items-center select-none ${d?._id === selectedfont ? "border border-[#00f]" : null} cursor-pointer bg-[#fafafa]`}
                 >
-                  <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                  {d?._id === selectedfont && < div className={` absolute z-10 bottom-1 right-1`}>
                     <CiCircleCheck className="text-[#00f]" />
-                  </div>
+                  </div>}
                   <div
                     onClick={() => {
-                      dispatch(setFont1(d?.name));
-                      dispatch(setFont2(d?.name));
-                      dispatch(setFont3(d?.name));
-                      dispatch(
-                        setFonts({
-                          Linke: d?.link,
-                          fontFamily: d?.name,
-                        })
-                      );
+                      setSelectedFont(d?._id)
+                      sessionStorage.setItem("font", d?.name);
+                      if (active == "h1") {
+                        sessionStorage.setItem("font1", d?.name);
+                      }
+                      if (active == "h2") {
+                        sessionStorage.setItem("font2", d?.name);
+                      }
+                      if (active == "h3") {
+                        sessionStorage.setItem("font3", d?.name);
+                      }
+                      dispatch(setFont1({ name: d?.name, link: d?.link }));
+                      dispatch(setFont2({ name: d?.name, link: d?.link }));
+                      dispatch(setFont3({ name: d?.name, link: d?.link }));
+                      if (!active) {
+                        dispatch(
+                          setFonts({
+                            Linke: d?.link,
+                            fontFamily: d?.name,
+                          })
+                        );
+                      }
                       if (d.premium) {
                         if (title === "Free") {
                           dispatch(setPremium({ type: "fonts" }));
@@ -177,13 +191,14 @@ function Styles({ search }) {
                   fonnt.map((d, i) => (
                     <div
                       key={i}
-                      className="flex w-[96%] h-[100px] mt-2 relative group hover:border hover:border-[#00f] duration-75 justify-center rounded-xl items-center select-none cursor-pointer bg-[#fafafa]"
+                      className={`flex w-[96%] h-[100px] mt-2 relative group hover:border hover:border-[#00f] duration-75 justify-center rounded-xl items-center select-none ${d?._id === selectedfont ? "border border-[#00f]" : null} cursor-pointer bg-[#fafafa]`}
                     >
-                      <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                      {d?._id === selectedfont && < div className={` absolute z-10 bottom-1 right-1`}>
                         <CiCircleCheck className="text-[#00f]" />
-                      </div>
+                      </div>}
                       <div
                         onClick={() => {
+                          setSelectedFont(d?._id)
                           sessionStorage.setItem("font", d?.name);
                           if (active == "h1") {
                             sessionStorage.setItem("font1", d?.name);

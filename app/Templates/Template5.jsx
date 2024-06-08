@@ -21,6 +21,7 @@ const Template5 = ({
   active,
   header1,
   font2,
+  objectType,
   color2,
   font3,
   Name,
@@ -205,7 +206,7 @@ const Template5 = ({
                 src={primeimage}
                 alt="pic"
                 style={{
-                  objectFit: "cover",
+                  objectFit: objectType,
                   height: "80%",
                   border: "8px",
                   borderColor: "black",
@@ -275,7 +276,6 @@ const Template5 = ({
                     e.stopPropagation();
                     // setComponent(2);
                     dispatch(setTrigger(true))
-
                     dispatch(setComponent(2));
                     setComponents(false);
                     const h1 = document.getElementById("h1");
@@ -391,7 +391,7 @@ const Template5 = ({
                 src={primeimage}
                 alt="pic"
                 style={{
-                  objectFit: "cover",
+                  objectFit: objectType,
                   height: "80%",
                   border: "8px",
                   borderColor: "black",

@@ -6,8 +6,9 @@ export const prosite_data = createSlice({
   initialState: {
     background_color: "#fff",
     showbutton: true,
+    objectType: "contain",
     trigger: false,
-    component: 3,
+    component: 1,
     redirection: "",
     premium: {
       type: [],
@@ -177,6 +178,9 @@ export const prosite_data = createSlice({
       }
       state.premium.ispremium = state.premium.type.length > 0;
     },
+    setObjectType: (state, action) => {
+      state.objectType = action.payload
+    },
     setRemovePremium: (state, action) => {
       // const { ispremium, type } = action.payload
       // state.premium.ispremium = ispremium
@@ -224,6 +228,7 @@ export const {
   setFont3,
   setFonts,
   setColor1,
+  setObjectType,
   setColor2,
   setRemovePremium,
   setTextColor,

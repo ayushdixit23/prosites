@@ -24,6 +24,7 @@ const Template1 = ({
   textcolor,
   active,
   header1,
+  objectType,
   font2,
   color2,
   font3,
@@ -394,7 +395,7 @@ const Template1 = ({
                 src={primeimage}
                 alt="pic"
                 style={{
-                  objectFit: "cover",
+                  objectFit: objectType,
                   height: "100%",
                   width: "100%",
                   borderRadius: "10px",

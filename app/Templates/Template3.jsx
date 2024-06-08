@@ -12,7 +12,7 @@ const Template3 = ({
 	setText1, color1, textcolor, active,
 	header1, font2, color2, font3, Name, Button1,
 	primeimage, header2, setText, buttoncss, setTrigger,
-	trigger, showbutton
+	trigger, showbutton, objectType
 }) => {
 	return (
 		<>
@@ -178,7 +178,7 @@ const Template3 = ({
 							src={primeimage}
 							alt="pic"
 							style={{
-								objectFit: "contain",
+								objectFit: objectType,
 								height: "60%",
 								width: "80%",
 							}}
@@ -345,7 +345,7 @@ const Template3 = ({
 							src={primeimage}
 							alt="pic"
 							style={{
-								objectFit: "cover",
+								objectFit: objectType,
 								height: "100%",
 								width: "100%",
 								borderRadius: "10px",

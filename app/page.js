@@ -54,6 +54,7 @@ import {
   setColor1,
   setColor2,
   setbackground,
+  setObjectType,
 } from "./redux/reducer/prosite_data";
 import style from "./pages/CustomScrollbar.module.css";
 import ReactDOMServer from "react-dom/server";
@@ -90,12 +91,17 @@ function page() {
   const [a, setA] = useState(null);
   const [uploadtype, setUploadtype] = useState("image")
   const drawerRef = useRef();
+  const [imageid, setImageId] = useState("")
+  const [userImageId, setUserImageId] = useState("")
+  const [backid, setBackId] = useState("")
+  const [memberships, setMemberships] = useState("Free")
 
   useEffect(() => {
     const data = sessionStorage.getItem("data");
     const parseData = JSON.parse(data);
     setData(parseData);
     setId(parseData.id);
+    setMemberships(parseData.memberships)
   }, []);
 
   // useEffect(() => {
@@ -140,6 +146,7 @@ function page() {
     active,
     font3,
     link1,
+    objectType,
     link2,
     color1,
     component,
@@ -168,7 +175,7 @@ function page() {
   const [load, setLoad] = useState(false);
   const [blinks, setBlinks] = useState([])
   const [header2, setHeader2] = useState(
-    "This is subheader. Stormi is a dog. She is dark grey and has long legs. Her eyes are expressive and are able to let her humans know what she is thinking."
+    "This is subheader.Stormi is a dog.She is dark grey and has long legs.Her eyes are expressive and are able to let her humans know what she is thinking."
   );
 
   useEffect(() => {
@@ -460,7 +467,7 @@ function page() {
                 src={primeimage}
                 alt="pic"
                 style={{
-                  objectFit: "cover",
+                  objectFit: objectType,
                   height: "400px",
                   width: "400px",
                   borderRadius: "10px",
@@ -576,7 +583,7 @@ function page() {
                 src={primeimage}
                 alt="pic"
                 style={{
-                  objectFit: "cover",
+                  objectFit: objectType,
                   height: "100%",
                   width: "100%",
                   borderRadius: "10px",
@@ -884,7 +891,7 @@ function page() {
                 src={primeimage}
                 alt="pic"
                 style={{
-                  objectFit: "cover",
+                  objectFit: objectType,
                   height: "400px",
                   width: "400px",
                   borderRadius: "10px",
@@ -999,7 +1006,7 @@ function page() {
                 src={primeimage}
                 alt="pic"
                 style={{
-                  objectFit: "cover",
+                  objectFit: objectType,
                   height: "100%",
                   width: "100%",
                   borderRadius: "10px",
@@ -1358,7 +1365,7 @@ function page() {
                   src={primeimage}
                   alt="pic"
                   style={{
-                    objectFit: "cover",
+                    objectFit: objectType,
                     height: "80%",
                     border: "8px",
                     borderColor: "black",
@@ -1494,7 +1501,7 @@ function page() {
                   src={primeimage}
                   alt="pic"
                   style={{
-                    objectFit: "cover",
+                    objectFit: objectType,
                     height: "80%",
                     border: "8px",
                     borderColor: "black",
@@ -2037,7 +2044,7 @@ function page() {
                           className="bg-[#f7f7f7] font-semibold no-scrollbar resize-none border rounded-xl text-[#424242] w-[100%] mt-2 p-1 outline-none"
                           ref={textareaRef}
                           onChange={handleTextareaChange}
-                          maxLength={100}
+                          maxLength={50}
                         />
                         <div className=" border-b-[1px] border-dotted w-[100%] py-1" />
                       </>
@@ -2049,7 +2056,7 @@ function page() {
                             Enter text
                           </div>{" "}
                           <div className="  text-[#9c9c9c] text-[14px] font-medium">
-                            {text.length}/200
+                            {text.length}/150
                           </div>
                         </div>
                         <textarea
@@ -2058,7 +2065,7 @@ function page() {
                           className="bg-[#f8f8f8] font-semibold no-scrollbar resize-none border rounded-xl text-[#424242] h-[] w-[100%] mt-2 p-1 outline-none"
                           ref={textareaRef}
                           onChange={handleTextareaChange}
-                          maxLength={300}
+                          maxLength={150}
                         />
                         <div className=" border-b-[1px] border-dotted w-[100%] py-1" />
                       </>
@@ -2157,7 +2164,14 @@ function page() {
                                 <div
                                   key={i}
                                   onClick={() => {
+                                    setImageId(i)
                                     dispatch(setimage(p.link));
+                                    if (p.name.includes("cover")) {
+                                      dispatch(setObjectType("cover"))
+                                    }
+                                    if (p.name.includes("contain")) {
+                                      dispatch(setObjectType("contain"))
+                                    }
                                     if (p.premium) {
                                       if (data.memberships === "Free") {
                                         dispatch(setPremium({ type: "image" }));
@@ -2170,8 +2184,11 @@ function page() {
                                       }
                                     }
                                   }}
-                                  className={`flex items-center justify-center w-[140px] h-[140px] ${style.customScrollbar} overflow-auto duration-75 select-none cursor-pointer`}
+                                  className={`flex items-center group relative hover:border-[#00f] hover:border-2 justify-center rounded-lg w-[140px] h-[140px] ${style.customScrollbar} overflow-auto ${imageid === i ? "border-[#00f] border-2" : null}  duration-75 select-none cursor-pointer bg-[#fafafa]`}
                                 >
+                                  {imageid === i && <div className={` absolute z-10 bottom-1 right-1`}>
+                                    <CiCircleCheck className="text-[#00f]" />
+                                  </div>}
                                   <div className="w-[90%] h-[90%] relative">
                                     <img
                                       src={p.link}
@@ -2203,7 +2220,14 @@ function page() {
                                   <div
                                     key={i}
                                     onClick={() => {
+                                      setImageId(i)
                                       dispatch(setimage(p.link));
+                                      if (p.name.includes("cover")) {
+                                        dispatch(setObjectType("cover"))
+                                      }
+                                      if (p.name.includes("contain")) {
+                                        dispatch(setObjectType("contain"))
+                                      }
                                       if (p.premium) {
                                         if (data.memberships === "Free") {
                                           dispatch(
@@ -2218,11 +2242,11 @@ function page() {
                                         }
                                       }
                                     }}
-                                    className={`flex items-center group relative hover:border-[#00f] hover:border-2 justify-center rounded-lg w-[140px] h-[140px] ${style.customScrollbar} overflow-auto  duration-75 select-none cursor-pointer bg-[#fafafa]`}
+                                    className={`flex items-center group relative hover:border-[#00f] hover:border-2 justify-center rounded-lg w-[140px] h-[140px] ${style.customScrollbar} overflow-auto ${imageid === i ? "border-[#00f] border-2" : null}  duration-75 select-none cursor-pointer bg-[#fafafa]`}
                                   >
-                                    <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                                    {imageid === i && <div className={` absolute z-10 bottom-1 right-1`}>
                                       <CiCircleCheck className="text-[#00f]" />
-                                    </div>
+                                    </div>}
                                     <div className="w-[90%] h-[90%]  relative">
                                       <img
                                         src={p.link}
@@ -2323,7 +2347,7 @@ function page() {
                             />
                           </div>
                         )}
-                        <div className=" border-b-[1px] border-dotted w-[100%] py-1" />
+                        {showbutton && <div className=" border-b-[1px] border-dotted w-[100%] py-1" />}
                         {showbutton && (
                           <div className="mt-2">
                             <div className="text-[#9c9c9c] text-[14px]">
@@ -2339,7 +2363,7 @@ function page() {
                             />
                           </div>
                         )}
-                        <div className=" border-b-[1px] border-dotted w-[100%] py-1" />
+                        {showbutton && <div className=" border-b-[1px] border-dotted w-[100%] py-1" />}
                         {showbutton && (
                           <div className=" w-full">
                             <div className="pt-2 text-[14px] text-[#9c9c9c]">
@@ -2465,29 +2489,65 @@ function page() {
                             name="myFile"
                             id="fileInput"
                             placeholder="Upload file"
-                            onChange={(e) =>
+                            onChange={(e) => {
+
                               uploaderPics(e.target.files[0])
+
+                            }
                               //  setFile()
                             }
                             className="w-[100%] self-start hidden text-[#424242]"
                           />
-                          <label
-                            htmlFor="fileInput"
-                          >
-                            {load ? <button
-                              className="bg-blue-800 p-2 flex justify-center w-full text-center  items-center text-white px-5 rounded-xl font-semibold"
-                              disabled
-                            >
-                              <div className="animate-spin">
-                                <AiOutlineLoading3Quarters />
-                              </div>
-                            </button> : <div
-                              className="bg-blue-800 p-2 text-center text-white px-5 w-full rounded-xl font-semibold"
 
-                            >
-                              Upload
-                            </div>}
-                          </label>
+                          {load ?
+                            //  <button
+                            //   className="bg-blue-800 p-2 flex justify-center w-full text-center  items-center text-white px-5 rounded-xl font-semibold"
+                            //   disabled
+                            // >
+                            //   <div className="animate-spin">
+                            //     <AiOutlineLoading3Quarters />
+                            //   </div>
+                            // </button>
+                            <div className="flex justify-between gap-4 bg-[#e2e2e2] text-black p-2 px-3 rounded-xl items-center">
+                              <div className="text-xs w-full font-semibold">Upload Your Images</div>
+                              <div className="p-1 px-3 bg-[#4880FF] text-white text-sm  flex justify-center w-[120px] py-2 text-center items-center font-semibold rounded-lg">
+                                <div className="animate-spin">
+                                  <AiOutlineLoading3Quarters />
+                                </div>
+                              </div>
+                            </div>
+                            : <div className="flex justify-between gap-4 bg-[#e2e2e2] text-black p-2 px-3 rounded-xl items-center">
+                              <div className="text-xs font-semibold">Upload Your {uploadtype === "image" ? "Images" : "Backgrounds"}</div>
+
+                              {
+                                uploadtype === "image" ?
+                                  <>
+                                    {
+                                      (memberships == "Free" && link.length >= 5) ? <div onClick={() => toast.error("Max Image Upload Reached!")} className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg">
+                                        <div>Upload</div>
+                                        <FaCrown className=" text-orange-300 " />
+                                      </div> : <label htmlFor="fileInput" className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg">
+                                        <div>Upload</div>
+
+                                      </label>
+                                    }
+                                  </>
+                                  :
+                                  <>
+                                    {
+                                      (memberships == "Free" && blinks.length >= 5) ? <div onClick={() => toast.error("Max Backgrounds Upload Reached!")} className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg">
+                                        <div>Upload</div>
+                                        <FaCrown className=" text-orange-300 " />
+                                      </div> : <label htmlFor="fileInput" className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg">
+                                        <div>Upload</div>
+
+                                      </label>
+                                    }
+                                  </>
+                              }
+
+                            </div>
+                          }
                         </div>
                         {
                           uploadtype === "image" ?
@@ -2504,13 +2564,14 @@ function page() {
                                       <div
                                         key={i}
                                         onClick={() => {
+                                          setUserImageId(i)
                                           dispatch(setimage(m));
                                         }}
-                                        className="flex items-center rounded-xl relative group hover:border hover:border-[#00f] justify-center w-[130px] mt-1 h-[130px] duration-75 select-none cursor-pointer bg-[#fafafa]"
+                                        className={`flex items-center rounded-xl relative group hover:border hover:border-[#00f] ${userImageId === i ? "border border-[#00f]" : null} justify-center w-[130px] mt-1 h-[130px] duration-75 select-none cursor-pointer bg-[#fafafa]`}
                                       >
-                                        <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                                        {userImageId === i && <div className={` absolute z-10 bottom-1 right-1`}>
                                           <CiCircleCheck className="text-[#00f]" />
-                                        </div>
+                                        </div>}
                                         <div className="w-[90%] h-[90%]  rounded-xl">
                                           <img
                                             src={m}
@@ -2535,13 +2596,14 @@ function page() {
                                       <div
                                         key={i}
                                         onClick={() => {
+                                          setBackId(i)
                                           dispatch(setBgImage(m));
                                         }}
-                                        className="flex items-center justify-center w-[130px] relative group hover:border hover:border-[#00f] rounded-xl mt-1 h-[130px] duration-75 select-none cursor-pointer bg-[#fafafa]"
+                                        className={`flex items-center justify-center w-[130px] relative group hover:border hover:border-[#00f] rounded-xl mt-1 h-[130px] duration-75 select-none cursor-pointer ${backid === i ? "border border-[#00f]" : null} bg-[#fafafa]`}
                                       >
-                                        <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                                        {backid === i && <div className={` absolute z-10 bottom-1 right-1`}>
                                           <CiCircleCheck className="text-[#00f]" />
-                                        </div>
+                                        </div>}
                                         <div className="w-[90%] h-[90%] rounded-xl">
                                           <img
                                             src={m}
@@ -2964,16 +3026,23 @@ function page() {
                                     onClick={() => {
                                       if (!p.premium) {
                                         dispatch(setimage(p.link));
+
                                       } else {
                                         console.log("membership");
                                       }
+                                      if (p.name.includes("cover")) {
+                                        dispatch(setObjectType("cover"))
+                                      }
+                                      if (p.name.includes("contain")) {
+                                        dispatch(setObjectType("contain"))
+                                      }
                                       dispatch(setTrigger(false))
                                     }}
-                                    className={`flex items-center justify-center w-[140px] h-[140px] ${style.customScrollbar}  relative group hover:border hover:border-[#00f]  overflow-auto duration-75 select-none cursor-pointer bg-[#fafafa]`}
+                                    className={`flex items-center group relative hover:border-[#00f] hover:border-2 justify-center rounded-lg w-[140px] h-[140px] ${style.customScrollbar} overflow-auto ${imageid === i ? "border-[#00f] border-2" : null}  duration-75 select-none cursor-pointer bg-[#fafafa]`}
                                   >
-                                    <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                                    {imageid === i && <div className={` absolute z-10 bottom-1 right-1`}>
                                       <CiCircleCheck className="text-[#00f]" />
-                                    </div>
+                                    </div>}
                                     <div className="w-[100%] h-[100%] relative">
                                       <img
                                         src={p.link}
@@ -3010,13 +3079,19 @@ function page() {
                                             setRemovePremium({ type: "image" })
                                           );
                                         }
+                                        if (p.name.includes("cover")) {
+                                          dispatch(setObjectType("cover"))
+                                        }
+                                        if (p.name.includes("contain")) {
+                                          dispatch(setObjectType("contain"))
+                                        }
                                         dispatch(setTrigger(false))
                                       }}
-                                      className={`flex items-center justify-center  relative group hover:border hover:border-[#00f]  w-[140px] h-[140px] ${style.customScrollbar} overflow-auto duration-75 select-none cursor-pointer bg-[#fafafa] `}
+                                      className={`flex items-center group relative hover:border-[#00f] hover:border-2 justify-center rounded-lg w-[140px] h-[140px] ${style.customScrollbar} overflow-auto ${imageid === i ? "border-[#00f] border-2" : null}  duration-75 select-none cursor-pointer bg-[#fafafa]`}
                                     >
-                                      <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                                      {imageid === i && <div className={` absolute z-10 bottom-1 right-1`}>
                                         <CiCircleCheck className="text-[#00f]" />
-                                      </div>
+                                      </div>}
                                       <div className="w-[100%] h-[100%] relative">
                                         <img
                                           src={p.link}
@@ -3281,23 +3356,44 @@ function page() {
                               }
                               className="w-[100%] self-start hidden text-[#424242]"
                             />
-                            <label
-                              htmlFor="fileInput"
-                            >
-                              {load ? <button
-                                className="bg-blue-800 p-2 flex justify-center w-full text-center items-center text-white px-5 rounded-xl font-semibold"
-                                disabled
-                              >
+
+                            {load ? <div className="flex justify-between gap-4 bg-[#e2e2e2] text-black p-2 px-3 rounded-xl items-center">
+                              <div className="text-xs w-full font-semibold">Upload Your Images</div>
+                              <div className="p-1 px-3 bg-[#4880FF] text-white text-sm  flex justify-center w-[120px] py-2 text-center items-center font-semibold rounded-lg">
                                 <div className="animate-spin">
                                   <AiOutlineLoading3Quarters />
                                 </div>
-                              </button> : <div
-                                className="bg-blue-800 p-2 text-center text-white px-5 w-full rounded-xl font-semibold"
+                              </div>
+                            </div>
+                              : <div className="flex justify-between gap-4 bg-[#e2e2e2] text-black p-2 px-3 rounded-xl items-center">
+                                <div className="text-xs font-semibold">Upload Your {uploadtype === "image" ? "Images" : "Backgrounds"}</div>
+                                {
+                                  uploadtype === "image" ?
+                                    <>
+                                      {
+                                        (memberships == "Free" && link.length >= 5) ? <div onClick={() => toast.error("Max Image Upload Reached!")} className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg">
+                                          <div>Upload</div>
+                                          <FaCrown className=" text-orange-300 " />
+                                        </div> : <label htmlFor="fileInput" className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg">
+                                          <div>Upload</div>
+                                        </label>
+                                      }
+                                    </>
+                                    :
+                                    <>
+                                      {
+                                        (memberships == "Free" && blinks.length >= 5) ? <div onClick={() => toast.error("Max Backgrounds Upload Reached!")} className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg">
+                                          <div>Upload</div>
+                                          <FaCrown className=" text-orange-300 " />
+                                        </div> : <label htmlFor="fileInput" className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg">
+                                          <div>Upload</div>
 
-                              >
-                                Upload
+                                        </label>
+                                      }
+                                    </>
+                                }
                               </div>}
-                            </label>
+
                           </div>
                           {
                             uploadtype === "image" ?
@@ -3314,14 +3410,15 @@ function page() {
                                         <div
                                           key={i}
                                           onClick={() => {
+                                            setUserImageId(i)
                                             dispatch(setimage(m));
                                             dispatch(setTrigger(false))
                                           }}
-                                          className="flex items-center justify-center w-[130px] mt-1 relative group hover:border hover:border-[#00f] rounded-xl h-[130px] duration-75 select-none cursor-pointer bg-[#fafafa]"
+                                          className={`flex items-center justify-center w-[130px] mt-1 relative group hover:border hover:border-[#00f] rounded-xl h-[130px] duration-75 select-none cursor-pointer ${userImageId === i ? "border border-[#00f]" : null} bg-[#fafafa]`}
                                         >
-                                          <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                                          {userImageId === i && <div className={` absolute z-10 bottom-1 right-1`}>
                                             <CiCircleCheck className="text-[#00f]" />
-                                          </div>
+                                          </div>}
                                           <div className="w-[90%] h-[90%] rounded-xl">
                                             <img
                                               src={m}
@@ -3347,14 +3444,15 @@ function page() {
                                         <div
                                           key={i}
                                           onClick={() => {
+                                            setBackId(i)
                                             dispatch(setBgImage(m));
                                             dispatch(setTrigger(false))
                                           }}
-                                          className="flex items-center justify-center relative group hover:border hover:border-[#00f] w-[130px] mt-1 h-[130px] duration-75 select-none cursor-pointer bg-[#fafafa]"
+                                          className={`flex items-center justify-center w-[130px] mt-1 relative group hover:border hover:border-[#00f] rounded-xl h-[130px] duration-75 select-none cursor-pointer ${backid === i ? "border border-[#00f]" : null} bg-[#fafafa]`}
                                         >
-                                          <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                                          {backid === i && <div className={` absolute z-10 bottom-1 right-1`}>
                                             <CiCircleCheck className="text-[#00f]" />
-                                          </div>
+                                          </div>}
                                           <div className="w-[90%] h-[90%]">
                                             <img
                                               src={m}
@@ -3600,6 +3698,7 @@ function page() {
                   dispatch={dispatch}
                   showbutton={showbutton}
                   switcher={switcher}
+                  objectType={objectType}
                   setComponent={setComponent}
                   setChange={setChange}
                   change={change}
@@ -3635,6 +3734,7 @@ function page() {
                   dispatch={dispatch}
                   redirection={redirection}
                   showbutton={showbutton}
+                  objectType={objectType}
                   switcher={switcher}
                   setComponent={setComponent}
                   setChange={setChange}
@@ -3672,6 +3772,7 @@ function page() {
                   showbutton={showbutton}
                   redirection={redirection}
                   switcher={switcher}
+                  objectType={objectType}
                   setComponent={setComponent}
                   setChange={setChange}
                   change={change}
@@ -3713,6 +3814,7 @@ function page() {
                   change={change}
                   font1={font1}
                   link1={link1}
+                  objectType={objectType}
                   setTrigger={setTrigger}
                   trigger={trigger}
                   link2={link2}
@@ -3746,6 +3848,7 @@ function page() {
                   setComponent={setComponent}
                   setChange={setChange}
                   change={change}
+                  objectType={objectType}
                   font1={font1}
                   link1={link1}
                   link2={link2}

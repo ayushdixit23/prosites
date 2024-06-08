@@ -9,11 +9,13 @@ import {
 import axios from "axios";
 import { FaCrown } from "react-icons/fa6";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { CiCircleCheck } from "react-icons/ci";
 
 function Styles() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true)
   const [title, setTitle] = useState("")
+  const [sid, setSid] = useState("")
 
   useEffect(() => {
     const data = sessionStorage.getItem("data");
@@ -47,11 +49,15 @@ function Styles() {
         :
         <div className=" select-none w-full  grid grid-cols-2 gap-3 overflow-y-scroll no-scrollbar ">
           {sty.map((d, i) => (
-            <div className="flex items-center justify-center overflow-auto mt-2 bg-[#fafafa] rounded-xl duration-75 select-none cursor-pointer ">
-              < div className="w-[100%] h-[120px] rounded-xl p-2">
+            <div className="flex items-center justify-center overflow-auto mt-2 rounded-xl group hover:border hover:border-[#00f] duration-75 select-none cursor-pointer ">
+              <div className={`w-[100%] h-[120px] rounded-xl p-[2px] relative ${i === sid ? "border border-[#00f]" : null} `}>
+                {i === sid && < div className={` absolute z-10 bottom-1 right-1`}>
+                  <CiCircleCheck className="text-[#00f]" />
+                </div>}
                 <div
                   key={i}
                   onClick={() => {
+                    setSid(i)
                     dispatch(
                       setstyle({
                         textcolor: d?.color,

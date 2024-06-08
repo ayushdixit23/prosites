@@ -23,6 +23,7 @@ function Background({ bgimg, search }) {
   const dispatch = useDispatch();
   const [color, setColor] = useColor("");
   const [title, setTitle] = useState("");
+  const [bid, setBid] = useState("")
 
   useEffect(() => {
     const data = sessionStorage.getItem("data");
@@ -103,6 +104,7 @@ function Background({ bgimg, search }) {
               <div
                 key={i}
                 onClick={() => {
+                  setBid(i)
                   dispatch(setBgImage(p.link));
                   if (p.premium) {
                     if (title === "Free") {
@@ -114,8 +116,11 @@ function Background({ bgimg, search }) {
                     }
                   }
                 }}
-                className={`flex items-center relative justify-center w-[140px] rounded-lg h-[90px] ${style.customScrollbar} overflow-auto duration-75 select-none cursor-pointer bg-[#fafafa]`}
+                className={`flex items-center group justify-center hover:border hover:border-[#00f] relative w-[140px] rounded-lg h-[90px] ${style.customScrollbar} overflow-auto ${i === bid ? "border border-[#00f]" : null} duration-75 select-none cursor-pointer bg-[#fafafa]`}
               >
+                {i === bid && < div className={` absolute z-10 bottom-1 right-1`}>
+                  <CiCircleCheck className="text-[#00f]" />
+                </div>}
                 <div className="w-full h-full ">
                   <img
                     key={i}
@@ -148,6 +153,7 @@ function Background({ bgimg, search }) {
                 <div
                   key={i}
                   onClick={() => {
+                    setBid(i)
                     dispatch(setBgImage(p.link));
                     if (p.premium) {
                       if (title === "Free") {
@@ -159,11 +165,12 @@ function Background({ bgimg, search }) {
                       }
                     }
                   }}
-                  className={`flex items-center group justify-center hover:border hover:border-[#00f] relative w-[140px] rounded-lg h-[90px] ${style.customScrollbar} overflow-auto duration-75 select-none cursor-pointer bg-[#fafafa]`}
+                  className={`flex items-center group justify-center hover:border hover:border-[#00f] relative w-[140px] rounded-lg h-[90px] ${style.customScrollbar} overflow-auto ${i === bid ? "border border-[#00f]" : null} duration-75 select-none cursor-pointer bg-[#fafafa]`}
                 >
-                  <div className={` absolute hidden group-hover:block z-10 bottom-1 right-1`}>
+                 
+                  {i === bid && < div className={` absolute z-10 bottom-1 right-1`}>
                     <CiCircleCheck className="text-[#00f]" />
-                  </div>
+                  </div>}
                   <div className="w-full h-full ">
                     <img
                       key={i}
@@ -191,7 +198,7 @@ function Background({ bgimg, search }) {
               ))}
           </>
         )}
-      </div>
+      </div >
 
       {/* <div
         className={`w-[100%] pn:max-sm:w-[100%] grid grid-cols-2 gap-2 pt-2 ${style.customScrollbar} overflow-auto h-[60vh]`}
