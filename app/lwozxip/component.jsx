@@ -23,8 +23,6 @@ const Component = () => {
     }
   }, [ndata])
 
-  console.log(prositeData)
-
   const router = useRouter();
 
   const fetchid = async () => {
