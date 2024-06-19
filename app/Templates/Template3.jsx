@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react'
 
 const Template3 = ({
@@ -163,8 +164,10 @@ const Template3 = ({
 
 						}}
 					>
-						<img
+						<Image
 							id="h4"
+							height={400}
+							width={400}
 							onClick={(e) => {
 								e.stopPropagation();
 								// setComponent(3);
@@ -330,8 +333,10 @@ const Template3 = ({
 							padding: "10px"
 						}}
 					>
-						<img
+						<Image
 							id="h4"
+							height={400}
+							width={400}
 							onClick={(e) => {
 								e.stopPropagation();
 								// setComponent(3);

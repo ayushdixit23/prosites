@@ -111,7 +111,7 @@ function Styles({ search }) {
               .map((d, i) => (
                 <div
                   key={i}
-                  className={`flex w-[96%] h-[100px] mt-2 relative group hover:border hover:border-[#00f] duration-75 justify-center rounded-xl items-center select-none ${d?._id === selectedfont ? "border border-[#00f]" : null} cursor-pointer bg-[#fafafa]`}
+                  className={`flex w-[96%] h-[100px] mt-2 relative group hover:border hover:border-[#00f] duration-75 justify-center rounded-xl items-center select-none ${d?._id === selectedfont ? "border border-[#00f]" : null} cursor-pointer dark:bg-[#313D4E] bg-[#fafafa]`}
                 >
                   {d?._id === selectedfont && < div className={` absolute z-10 bottom-1 right-1`}>
                     <CiCircleCheck className="text-[#00f]" />
@@ -129,9 +129,9 @@ function Styles({ search }) {
                       if (active == "h3") {
                         sessionStorage.setItem("font3", d?.name);
                       }
-                      dispatch(setFont1({ name: d?.name, link: d?.link }));
-                      dispatch(setFont2({ name: d?.name, link: d?.link }));
-                      dispatch(setFont3({ name: d?.name, link: d?.link }));
+                      dispatch(setFont1({ name: d?.name, link: d?.link, id: d?._id }));
+                      dispatch(setFont2({ name: d?.name, link: d?.link, id: d?._id }));
+                      dispatch(setFont3({ name: d?.name, link: d?.link, id: d?._id }));
                       if (!active) {
                         dispatch(
                           setFonts({
@@ -151,9 +151,9 @@ function Styles({ search }) {
                       }
                       dispatch(setTrigger(false))
                     }}
-                    className="w-[90%] bg-[#fafafa] rounded-xl h-[90%]"
+                    className="w-[90%] bg-[#fafafa] dark:bg-[#313D4E] rounded-xl h-[90%]"
                   >
-                    <div className="px-4 py-2 flex-row flex  h-full w-full bg-[#fafafa] rounded-xl text-black items-center justify-center">
+                    <div className="px-4 py-2 flex-row flex  h-full w-full bg-[#fafafa] dark:bg-[#313D4E] rounded-xl dark:text-white text-black items-center justify-center">
                       <link rel="stylesheet" href={d?.link} />
                       <div style={{ fontFamily: d?.name }}>{d?.name}</div>
                       {title === "Free" && (
@@ -191,7 +191,7 @@ function Styles({ search }) {
                   fonnt.map((d, i) => (
                     <div
                       key={i}
-                      className={`flex w-[96%] h-[100px] mt-2 relative group hover:border hover:border-[#00f] duration-75 justify-center rounded-xl items-center select-none ${d?._id === selectedfont ? "border border-[#00f]" : null} cursor-pointer bg-[#fafafa]`}
+                      className={`flex w-[96%] h-[100px] mt-2 relative group hover:border hover:border-[#00f] duration-75 justify-center rounded-xl items-center select-none ${d?._id === selectedfont ? "border border-[#00f]" : null} cursor-pointer dark:bg-[#313D4E] bg-[#fafafa]`}
                     >
                       {d?._id === selectedfont && < div className={` absolute z-10 bottom-1 right-1`}>
                         <CiCircleCheck className="text-[#00f]" />
@@ -209,9 +209,9 @@ function Styles({ search }) {
                           if (active == "h3") {
                             sessionStorage.setItem("font3", d?.name);
                           }
-                          dispatch(setFont1({ name: d?.name, link: d?.link }));
-                          dispatch(setFont2({ name: d?.name, link: d?.link }));
-                          dispatch(setFont3({ name: d?.name, link: d?.link }));
+                          dispatch(setFont1({ name: d?.name, link: d?.link, id: d?._id }));
+                          dispatch(setFont2({ name: d?.name, link: d?.link, id: d?._id }));
+                          dispatch(setFont3({ name: d?.name, link: d?.link, id: d?._id }));
                           if (!active) {
                             dispatch(
                               setFonts({
@@ -231,9 +231,9 @@ function Styles({ search }) {
                           }
                           dispatch(setTrigger(false))
                         }}
-                        className="w-[90%] bg-[#fafafa] rounded-xl h-[90%]"
+                        className="w-[90%] bg-[#fafafa] dark:bg-[#313D4E] rounded-xl h-[90%]"
                       >
-                        <div className="px-4 py-2 flex-row flex rounded-xl h-full w-full bg-[#fafafa]  text-black items-center justify-center">
+                        <div className="px-4 py-2 flex-row flex rounded-xl h-full w-full bg-[#fafafa] dark:bg-[#313D4E] dark:text-white text-black items-center justify-center">
                           <link rel="stylesheet" href={d?.link} />
                           <div style={{ fontFamily: d?.name }}>{d?.name}</div>
                           {title === "Free" && (

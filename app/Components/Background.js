@@ -116,7 +116,7 @@ function Background({ bgimg, search }) {
                     }
                   }
                 }}
-                className={`flex items-center group justify-center hover:border hover:border-[#00f] relative w-[140px] rounded-lg h-[90px] ${style.customScrollbar} overflow-auto ${i === bid ? "border border-[#00f]" : null} duration-75 select-none cursor-pointer bg-[#fafafa]`}
+                className={`flex items-center group justify-center hover:border hover:border-[#00f] relative w-[140px] rounded-lg h-[90px] ${style.customScrollbar} overflow-auto ${i === bid ? "border border-[#00f]" : null} duration-75 select-none cursor-pointer dark:bg-[#313D4E] bg-[#fafafa]`}
               >
                 {i === bid && < div className={` absolute z-10 bottom-1 right-1`}>
                   <CiCircleCheck className="text-[#00f]" />
@@ -165,9 +165,9 @@ function Background({ bgimg, search }) {
                       }
                     }
                   }}
-                  className={`flex items-center group justify-center hover:border hover:border-[#00f] relative w-[140px] rounded-lg h-[90px] ${style.customScrollbar} overflow-auto ${i === bid ? "border border-[#00f]" : null} duration-75 select-none cursor-pointer bg-[#fafafa]`}
+                  className={`flex items-center group justify-center hover:border hover:border-[#00f] relative w-[140px] rounded-lg h-[90px] ${style.customScrollbar} overflow-auto ${i === bid ? "border border-[#00f]" : null} duration-75 select-none cursor-pointer dark:bg-[#313D4E] bg-[#fafafa]`}
                 >
-                 
+
                   {i === bid && < div className={` absolute z-10 bottom-1 right-1`}>
                     <CiCircleCheck className="text-[#00f]" />
                   </div>}

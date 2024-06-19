@@ -1,7 +1,6 @@
 "use client";
 import axios from "axios";
-import Image from "next/image";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 function page() {
   const [bio, setBio] = useState();

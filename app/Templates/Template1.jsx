@@ -1,4 +1,4 @@
-import { DrawerTrigger } from "@/components/ui/drawer";
+
 import Image from "next/image";
 import React from "react";
 
@@ -43,6 +43,7 @@ const Template1 = ({
       <div className="w-[100%] h-[100%]">
         {switcher === true ? (
           <div
+
             onClick={() => {
               // setComponent(3);
               dispatch(setComponent(3));
@@ -213,7 +214,7 @@ const Template1 = ({
 
               }}
             >
-              <img
+              {/* <img
                 id="h4"
                 onClick={(e) => {
 
@@ -232,6 +233,30 @@ const Template1 = ({
                   objectFit: "contain",
                   height: "60%",
                   width: "80%",
+                }}
+              /> */}
+
+              <Image
+                id="h4"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // setComponent(3);
+                  dispatch(setTrigger(true))
+
+                  dispatch(setComponent(3));
+                  // setActive("h4")
+                  dispatch(setReduxActive("h4"));
+                  setChange(0);
+                }}
+                src={primeimage}
+                width={500}
+                height={500}
+                alt="pic"
+                style={{
+                  objectFit: objectType,
+                  height: "100%",
+                  width: "100%",
+                  borderRadius: "10px",
                 }}
               />
             </div>
@@ -380,7 +405,30 @@ const Template1 = ({
                 padding: "10px"
               }}
             >
-              <img
+              <Image
+                id="h4"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // setComponent(3);
+                  dispatch(setTrigger(true))
+
+                  dispatch(setComponent(3));
+                  // setActive("h4")
+                  dispatch(setReduxActive("h4"));
+                  setChange(0);
+                }}
+                src={primeimage}
+                width={400}
+                height={400}
+                alt="pic"
+                style={{
+                  objectFit: objectType,
+                  height: "100%",
+                  width: "100%",
+                  borderRadius: "10px",
+                }}
+              />
+              {/* <img
                 id="h4"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -400,7 +448,7 @@ const Template1 = ({
                   width: "100%",
                   borderRadius: "10px",
                 }}
-              />
+              /> */}
             </div>
           </div>
         )}

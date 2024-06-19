@@ -5,7 +5,8 @@ import {
   setPremium,
   setRemovePremium,
   setbuttoncss,
-  setTrigger
+  setTrigger,
+  setButtonId
 } from "../redux/reducer/prosite_data";
 import axios from "axios";
 import { APIPRO } from "@/Essentials";
@@ -61,7 +62,7 @@ function Button() {
           className={`h-[50vh] select-none w-full grid grid-cols-2 overflow-auto mt-2 ${style.customScrollbar}`}
         >
           {but.map((b, i) => (
-            <div className={`flex items-center  group hover:border hover:border-[#00f]  relative justify-center rounded-xl w-[96%] h-[100px] overflow-auto mt-2 bg-[#fafafa] duration-75 select-none cursor-pointer ${b?._id === bid ? "border border-[#00f]" : null}`}>
+            <div className={`flex items-center  group hover:border hover:border-[#00f]  relative justify-center rounded-xl w-[96%] h-[100px] overflow-auto mt-2 bg-[#fafafa] dark:bg-[#313D4E] duration-75 select-none cursor-pointer ${b?._id === bid ? "border border-[#00f]" : null}`}>
               {bid === b?._id && < div className={` absolute z-10 bottom-1 right-1`}>
                 <CiCircleCheck className="text-[#00f]" />
               </div>}
@@ -69,6 +70,7 @@ function Button() {
               <div
                 key={i}
                 onClick={() => {
+                  dispatch(setButtonId(b?._id))
                   setBid(b?._id)
                   dispatch(
                     setbuttoncss({

@@ -1,14 +1,17 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
 
 export const prosite_data = createSlice({
   name: "prosite_data",
   initialState: {
     background_color: "#fff",
+    buttonid: "",
     showbutton: true,
     objectType: "contain",
     trigger: false,
     component: 1,
+    header1: "Main long header with several lines",
+    header2: "This is subheader.Stormi is a dog.She is dark grey and has long legs.Her eyes are expressive and are able to let her humans know what she is thinking.",
+    Button1: "Click Now",
     redirection: "",
     premium: {
       type: [],
@@ -19,14 +22,17 @@ export const prosite_data = createSlice({
     buttontext: "Click Here",
     bgimage: "https://dn3w8358m09e7.cloudfront.net/def1234.jpeg",
     active: "",
-    font1: "",
     link1: "",
     link2: "",
     link3: "",
+    font1: "",
     font2: "",
+    font3: "",
+    fontid1: "",
+    fontid2: "",
+    fontid3: "",
     color1: "",
     color2: "",
-    font3: "",
     perf: {
       about: true,
       community: true,
@@ -98,6 +104,7 @@ export const prosite_data = createSlice({
       state.background_color = bgcolor;
       state.buttoncss.backgroundColor = buttoncss;
       state.buttoncss.color = textcolor;
+      state.bgimage = ""
     },
     setFonts: (state, action) => {
       const { Linke, fontFamily } = action.payload;
@@ -126,27 +133,47 @@ export const prosite_data = createSlice({
       }
     },
     setFont1: (state, action) => {
-      const { name, link } = action.payload;
+      const { name, link, id } = action.payload;
       if (state.active === "h1") {
         state.font1 = name;
         state.link1 = link;
+        state.fontid1 = id
+
       }
       state.Name = "";
     },
     setFont2: (state, action) => {
-      const { name, link } = action.payload;
+      const { name, link, id } = action.payload;
       if (state.active === "h2") {
         state.font2 = name;
         state.link2 = link;
+        state.fontid2 = id
       }
       state.Name = "";
     },
     setFont3: (state, action) => {
-      const { name, link } = action.payload;
+      const { name, link, id } = action.payload;
       if (state.active === "h3") {
         state.font3 = name;
         state.link3 = link;
+        state.fontid3 = id
       }
+      state.Name = "";
+    },
+    setFontT1: (state, action) => {
+      const { name, link, id } = action.payload;
+      state.font1 = name;
+      state.link1 = link;
+      state.fontid1 = id
+      state.Name = "";
+    },
+    setFontT2: (state, action) => {
+      const { name, link, id } = action.payload;
+
+      state.font2 = name;
+      state.link2 = link;
+      state.fontid2 = id
+
       state.Name = "";
     },
     setReduxActive: (state, action) => {
@@ -209,6 +236,18 @@ export const prosite_data = createSlice({
     setRedirection: (state, action) => {
       state.redirection = action.payload;
     },
+    setButton1: (state, action) => {
+      state.Button1 = action.payload
+    },
+    setHeader1: (state, action) => {
+      state.header1 = action.payload
+    },
+    setHeader2: (state, action) => {
+      state.header2 = action.payload
+    },
+    setButtonId: (state, action) => {
+      state.buttonid = action.payload
+    }
   },
 });
 
@@ -217,14 +256,19 @@ export const {
   showabout,
   setComponent,
   switchbg_color,
+  setButtonId,
   setimage,
   setRedirection,
+  setButton1,
+  setHeader1, setHeader2,
   setbuttoncss,
   setPremium,
   setbackground,
   setstyle,
   setFont1,
   setFont2,
+  setFontT1,
+  setFontT2,
   setFont3,
   setFonts,
   setColor1,

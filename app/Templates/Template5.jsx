@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 const Template5 = ({
@@ -191,15 +192,15 @@ const Template5 = ({
 
               }}
             >
-              <img
+              <Image
+                width={400}
+                height={400}
                 id="h4"
                 onClick={(e) => {
                   e.stopPropagation();
-                  // setComponent(3);
                   dispatch(setTrigger(true))
                   sessionStorage.setItem("defaultopen", true)
                   dispatch(setComponent(3));
-                  // setActive("h4")
                   dispatch(setReduxActive("h4"));
                   setChange(0);
                 }}
@@ -376,7 +377,9 @@ const Template5 = ({
 
               }}
             >
-              <img
+              <Image
+                width={400}
+                height={400}
                 id="h4"
                 onClick={(e) => {
                   e.stopPropagation();
