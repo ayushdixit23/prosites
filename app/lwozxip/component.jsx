@@ -29,10 +29,8 @@ const Component = () => {
 
   const fetchid = async () => {
     try {
-    
       const res = await axios.get(
-        // `https://work.grovyo.xyz/api/v1/fetchwithid/${id}`
-        `http://localhost:7190/api/v1/fetchwithid/${id}`
+        `https://work.grovyo.xyz/api/v1/fetchwithid/${id}`
       );
       // const res = await axios.get(`http://localhost:7190/api/v1/fetchwithid/${id}`)
       console.log(res.data);
