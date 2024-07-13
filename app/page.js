@@ -1,7 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { HiOutlineDesktopComputer } from "react-icons/hi";
-import back from "@/app/assets/Visual.png";
 import { CiCircleCheck, CiMobile2 } from "react-icons/ci";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import t1 from "./assets/t1.png";
@@ -23,12 +22,7 @@ import Membership from "./Components/Membership";
 import { GoArrowLeft } from "react-icons/go";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import {
@@ -75,10 +69,6 @@ import toast, { Toaster } from "react-hot-toast";
 import { useWindowSize } from "./Components/windowsize";
 import { Switch } from "@/components/ui/switch";
 import html2canvas from "html2canvas";
-// import { useScreenshot } from "use-react-screenshot";
-import { useScreenshot } from "use-screenshot-hook";
-import domtoimage from 'dom-to-image';
-import { ModeToggle } from "./Components/ModeToggle";
 
 function page() {
   const dispatch = useDispatch();
@@ -93,7 +83,6 @@ function page() {
   const webRef = useRef();
   const [search, setSearch] = useState("");
   const [pop, setPop] = useState(false);
-  const [a, setA] = useState(null);
   const [uploadtype, setUploadtype] = useState("image")
   const drawerRef = useRef();
   const [domain, setDomain] = useState("")
@@ -1536,7 +1525,7 @@ function page() {
 
       const canvas = await html2canvas(webRef.current, { useCORS: true, allowTaint: true, });
       const image = canvas.toDataURL('image/png');
-      setA(image)
+
 
       const tempWeb = ReactDOMServer.renderToString(tempWed);
       const tempmob = ReactDOMServer.renderToString(tempPhone);
@@ -1601,7 +1590,6 @@ function page() {
 
   return (
     <Drawer
-
       open={trigger && size.width < 821}
       onClose={() => dispatch(setTrigger(false))}
     >
@@ -2820,7 +2808,7 @@ function page() {
 
           {/* side Components for phone */}
           <div className="sm:hidden">
-            <DrawerContent ref={drawerRef}>
+            <DrawerContent ref={drawerRef} >
               <div className="h-[100%] w-[100%] sm:flex sm:flex-row-reverse pn:max-sm:w-[100%] pn:max-sm:h-[500px] dark:bg-[#273142] pn:max-sm:bg-[#fefefe] justify-end pn:max-sm:rounded-t-xl">
                 {component === 1 ? (
                   <div className="h-[100%] w-[98%] pn:max-sm:w-[100%] dark:bg-[#273142] bg-[#fff] flex flex-col items-center pn:max-sm:rounded-t-3xl ">

@@ -21,7 +21,7 @@ import { CiCircleCheck } from "react-icons/ci";
 
 function Background({ bgimg, search }) {
   const dispatch = useDispatch();
-  const [color, setColor] = useColor("");
+  const [color, setColor] = useColor("#ffffff");
   const [title, setTitle] = useState("");
   const [bid, setBid] = useState("")
 
@@ -46,7 +46,7 @@ function Background({ bgimg, search }) {
   // }, []);
 
   useEffect(() => {
-    if (color.hex !== "#000000") {
+    if (color.hex !== "#ffffff") {
       dispatch(setbackground(color.hex));
     }
   }, [color]);
