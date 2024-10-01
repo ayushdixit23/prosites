@@ -76,8 +76,8 @@ function page() {
   const [pic1, setPic1] = useState("");
   const [text, setText] = useState("");
   const [data, setData] = useState("");
-  const [id, setId] = useState("");
-  // const [id, setId] = useState("64b84197281876c462d40978");
+  // const [id, setId] = useState("");
+  const [id, setId] = useState("64b84197281876c462d40978");
   const [text1, setText1] = useState(false);
   // const [active, setActive] = useState("");
   const webRef = useRef();
@@ -92,13 +92,13 @@ function page() {
   const [backid, setBackId] = useState("")
   const [memberships, setMemberships] = useState("Free")
 
-  useEffect(() => {
-    const data = sessionStorage.getItem("data");
-    const parseData = JSON.parse(data);
-    setData(parseData);
-    setId(parseData.id);
-    setMemberships(parseData.memberships)
-  }, []);
+  // useEffect(() => {
+  //   const data = sessionStorage.getItem("data");
+  //   const parseData = JSON.parse(data);
+  //   setData(parseData);
+  //   setId(parseData.id);
+  //   setMemberships(parseData.memberships)
+  // }, []);
 
   // useEffect(() => {
   //   function handleClickOutside(event) {
