@@ -13,23 +13,15 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { IoFlashOutline, IoSettingsOutline } from "react-icons/io5";
 import { LuLayoutTemplate } from "react-icons/lu";
-import { RxCross2, RxDoubleArrowLeft, RxText } from "react-icons/rx";
 import { FaBuromobelexperte, FaCrown } from "react-icons/fa6";
 import { MdOutlineCloudUpload, MdSearch } from "react-icons/md";
 import { LiaToggleOffSolid, LiaToggleOnSolid } from "react-icons/lia";
 import Fontss from "./Components/Font";
 import Membership from "./Components/Membership";
 import { GoArrowLeft } from "react-icons/go";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import {
   setComponent,
-  // setFont1,
-  // setFont2,
-  // setFont3,
   setPerf,
   setPremium,
   setTrigger,
@@ -46,7 +38,8 @@ import {
   setFont2,
   setFont3,
   setButton1,
-  setHeader1, setHeader2,
+  setHeader1,
+  setHeader2,
   setColor1,
   setColor2,
   setbackground,
@@ -69,6 +62,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useWindowSize } from "./Components/windowsize";
 import { Switch } from "@/components/ui/switch";
 import html2canvas from "html2canvas";
+import { RxText } from "react-icons/rx";
 
 function page() {
   const dispatch = useDispatch();
@@ -76,29 +70,52 @@ function page() {
   const [pic1, setPic1] = useState("");
   const [text, setText] = useState("");
   const [data, setData] = useState("");
-  // const [id, setId] = useState("");
-  const [id, setId] = useState("64b84197281876c462d40978");
+  const [id, setId] = useState("");
+  // const [id, setId] = useState("66ac5827858661088c42887e");
+  // const [id, setId] = useState("6550737ffe8f9dc7614bba5f");
   const [text1, setText1] = useState(false);
   // const [active, setActive] = useState("");
   const webRef = useRef();
   const [search, setSearch] = useState("");
   const [pop, setPop] = useState(false);
-  const [uploadtype, setUploadtype] = useState("image")
+  const [uploadtype, setUploadtype] = useState("image");
   const drawerRef = useRef();
-  const [domain, setDomain] = useState("")
-  const [imageid, setImageId] = useState("")
-  const [userImageId, setUserImageId] = useState("")
+  const [domain, setDomain] = useState("");
+  const [imageid, setImageId] = useState("");
+  const [userImageId, setUserImageId] = useState("");
 
-  const [backid, setBackId] = useState("")
-  const [memberships, setMemberships] = useState("Free")
+  const [backid, setBackId] = useState("");
+  const [memberships, setMemberships] = useState("Free");
+
+  useEffect(() => {
+    const data = sessionStorage.getItem("data");
+    const parseData = JSON.parse(data);
+    setData(parseData);
+    setId(parseData.id);
+    setMemberships(parseData.memberships)
+  }, []);
 
   // useEffect(() => {
-  //   const data = sessionStorage.getItem("data");
-  //   const parseData = JSON.parse(data);
-  //   setData(parseData);
-  //   setId(parseData.id);
-  //   setMemberships(parseData.memberships)
-  // }, []);
+  //   const fetchid = async () => {
+  //     try {
+  //       const res = await axios.get(
+  //         `https://monarchs.grovyo.xyz/api/login/fetchwithid/${id}`
+  //       );
+  //       // const res = await axios.get(`http://localhost:7190/api/v1/fetchwithid/${id}`)
+  //       console.log(res.data);
+  //       if (res.data.success) {
+  //         const data = res.data.data;
+  //         setData(data);
+  //         setId(data.id);
+  //         setMemberships(data.memberships);
+  //         sessionStorage.setItem("data", JSON.stringify(data));
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchid();
+  // }, [id]);
 
   // useEffect(() => {
   //   function handleClickOutside(event) {
@@ -136,20 +153,20 @@ function page() {
   const applyDomains = async () => {
     try {
       if (!domain) {
-        toast.error("Please Enter Valid Domain!")
-        return
+        toast.error("Please Enter Valid Domain!");
+        return;
       }
-      const res = await axios.post(`${API}/v1/setDomain/${id}`, { domain })
+      const res = await axios.post(`${API}/v1/setDomain/${id}`, { domain });
       if (res.data.success) {
-        setDomain("")
-        toast.success("Domain Request Added!")
+        setDomain("");
+        toast.success("Domain Request Added!");
       } else {
-        toast.success("Something Went Wrong!")
+        toast.success("Something Went Wrong!");
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const {
     background_color,
@@ -193,30 +210,29 @@ function page() {
 
   const [loading, setLoading] = useState(false);
   const [load, setLoad] = useState(false);
-  const [blinks, setBlinks] = useState([])
-
+  const [blinks, setBlinks] = useState([]);
 
   const [close, setClose] = useState(Clic);
   const [link, setLink] = useState([]);
 
   const uploaderPics = async (file) => {
     try {
-      setLoad(true)
+      setLoad(true);
       if (uploadtype === "image") {
-        setLoad(true)
-        await uploadcont(file)
-        setLoad(false)
+        setLoad(true);
+        await uploadcont(file);
+        setLoad(false);
       } else {
-        setLoad(true)
-        await backgroundUpload(file)
-        setLoad(false)
+        setLoad(true);
+        await backgroundUpload(file);
+        setLoad(false);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
-      setLoad(false)
+      setLoad(false);
     }
-  }
+  };
 
   const uploadcont = async (file) => {
     try {
@@ -231,10 +247,10 @@ function page() {
         setLoad(false);
       } else {
         console.log("Error");
+        toast.error("Something Went Wrong!");
       }
       setLoad(false);
     } catch (e) {
-      console.log(e);
       console.log("Something Went Wrong!");
     } finally {
       setLoad(false);
@@ -249,7 +265,7 @@ function page() {
       const res = await axios.post(`${API}/v1/background/${id}`, form);
       if (res.data.success) {
         toast.success("Image Uploaded!");
-        await getBackgrounds()
+        await getBackgrounds();
         // setFile("");
         setLoad(false);
       } else {
@@ -279,7 +295,7 @@ function page() {
     try {
       const res = await axios.get(`${API}/v1/getbackground/${id}`);
       if (res.data.success) {
-        setBlinks(res.data.links)
+        setBlinks(res.data.links);
       }
     } catch (e) {
       console.log("Items not fetched");
@@ -289,7 +305,7 @@ function page() {
   useEffect(() => {
     if (id) {
       getitems();
-      getBackgrounds()
+      getBackgrounds();
     }
   }, [id]);
 
@@ -340,23 +356,27 @@ function page() {
   // };
 
   const deleteTemp = () => {
-    dispatch(setbackground(""))
-    dispatch(setBgImage("https://dn3w8358m09e7.cloudfront.net/def1234.jpeg"))
+    dispatch(setbackground(""));
+    dispatch(setBgImage("https://dn3w8358m09e7.cloudfront.net/def1234.jpeg"));
     dispatch(setComponent(1));
-    dispatch(setimage("https://dn3w8358m09e7.cloudfront.net/def1234.jpeg"))
+    dispatch(setimage("https://dn3w8358m09e7.cloudfront.net/def1234.jpeg"));
 
-    dispatch(setHeader1("Main long header with several lines"))
-    dispatch(setHeader2("This is subheader. Stormi is a dog. She is dark grey and has long legs. Her eyes are expressive and are able to let her humans know what she is thinking."))
+    dispatch(setHeader1("Main long header with several lines"));
+    dispatch(
+      setHeader2(
+        "This is subheader. Stormi is a dog. She is dark grey and has long legs. Her eyes are expressive and are able to let her humans know what she is thinking."
+      )
+    );
     dispatch(setFont1(""));
-    dispatch(setButton1("Click now"))
+    dispatch(setButton1("Click now"));
     dispatch(setFont2(""));
     dispatch(setFont3(""));
-    dispatch(setReduxActive("h1"))
-    dispatch(setColor1(""))
-    dispatch(setTextColor(""))
-    dispatch(setReduxActive("h2"))
-    dispatch(setColor2(""))
-    dispatch(setReduxActive(""))
+    dispatch(setReduxActive("h1"));
+    dispatch(setColor1(""));
+    dispatch(setTextColor(""));
+    dispatch(setReduxActive("h2"));
+    dispatch(setColor2(""));
+    dispatch(setReduxActive(""));
     dispatch(
       setFonts({
         Linke: "",
@@ -364,7 +384,6 @@ function page() {
       })
     );
   };
-
 
   useEffect(() => {
     pic();
@@ -384,8 +403,8 @@ function page() {
               backgroundImage: background_color
                 ? null
                 : bgimage
-                  ? `url(${bgimage})`
-                  : null,
+                ? `url(${bgimage})`
+                : null,
               backgroundPosition: "center",
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
@@ -430,8 +449,9 @@ function page() {
                     fontFamily: font2 ? font2 : Name,
                     color: color2 ? color2 : textcolor,
                   }}
-                  className={`text-[100%] pn:max-ss:text-[30%] ss:max-pp:text-[60%] pp:max-sm:text-[80%] font-semibold text-black w-[100%] my-2 ${active === "h2" ? "" : ""
-                    }`}
+                  className={`text-[100%] pn:max-ss:text-[30%] ss:max-pp:text-[60%] pp:max-sm:text-[80%] font-semibold text-black w-[100%] my-2 ${
+                    active === "h2" ? "" : ""
+                  }`}
                 >
                   {header2}
                 </div>
@@ -446,8 +466,9 @@ function page() {
                           // color: textcolor,
                           // fontFamily: Name,
                         }}
-                        className={`text-[100%] pn:max-ss:text-[30%] cursor-pointer ss:max-pp:text-[60%] pp:max-sm:text-[80%] ${active === "h3" ? "" : ""
-                          }`}
+                        className={`text-[100%] pn:max-ss:text-[30%] cursor-pointer ss:max-pp:text-[60%] pp:max-sm:text-[80%] ${
+                          active === "h3" ? "" : ""
+                        }`}
                       >
                         <div
                           style={{
@@ -491,8 +512,8 @@ function page() {
               backgroundImage: background_color
                 ? null
                 : bgimage
-                  ? `url(${bgimage})`
-                  : null,
+                ? `url(${bgimage})`
+                : null,
               backgroundPosition: "center",
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
@@ -531,8 +552,9 @@ function page() {
                     maxWidth: "100%",
                     fontWeight: "bold",
                   }}
-                  className={`text-[200%] pn:max-ss:text-[50%] ss:max-pp:text-[100%] pp:max-sm:text-[160%]  font-semibold text-black w-[100%] ${active === "h1" ? "" : ""
-                    }`}
+                  className={`text-[200%] pn:max-ss:text-[50%] ss:max-pp:text-[100%] pp:max-sm:text-[160%]  font-semibold text-black w-[100%] ${
+                    active === "h1" ? "" : ""
+                  }`}
                 >
                   {header1}
                 </div>
@@ -547,8 +569,9 @@ function page() {
                     width: "100%",
                     marginTop: "2%",
                   }}
-                  className={`text-[100%] pn:max-ss:text-[30%] ss:max-pp:text-[60%] pp:max-sm:text-[80%] font-semibold text-black w-[100%] my-2 ${active === "h2" ? "" : ""
-                    }`}
+                  className={`text-[100%] pn:max-ss:text-[30%] ss:max-pp:text-[60%] pp:max-sm:text-[80%] font-semibold text-black w-[100%] my-2 ${
+                    active === "h2" ? "" : ""
+                  }`}
                 >
                   {header2}
                 </div>
@@ -676,8 +699,9 @@ function page() {
                           // color: textcolor,
                           // fontFamily: Name,
                         }}
-                        className={`text-[100%] pn:max-ss:text-[30%] cursor-pointer ss:max-pp:text-[60%] pp:max-sm:text-[80%] ${active === "h3" ? "" : ""
-                          }`}
+                        className={`text-[100%] pn:max-ss:text-[30%] cursor-pointer ss:max-pp:text-[60%] pp:max-sm:text-[80%] ${
+                          active === "h3" ? "" : ""
+                        }`}
                       >
                         <div
                           style={{
@@ -742,8 +766,9 @@ function page() {
                     maxWidth: "100%",
                     fontWeight: "bold",
                   }}
-                  className={`text-[200%] pn:max-ss:text-[50%] ss:max-pp:text-[100%] pp:max-sm:text-[160%]  font-semibold text-black w-[100%] ${active === "h1" ? "" : ""
-                    }`}
+                  className={`text-[200%] pn:max-ss:text-[50%] ss:max-pp:text-[100%] pp:max-sm:text-[160%]  font-semibold text-black w-[100%] ${
+                    active === "h1" ? "" : ""
+                  }`}
                 >
                   {header1}
                 </div>
@@ -759,8 +784,9 @@ function page() {
                     width: "100%",
                     marginTop: "2%",
                   }}
-                  className={`text-[100%] pn:max-ss:text-[30%] ss:max-pp:text-[60%] pp:max-sm:text-[80%] font-semibold text-black w-[100%] my-2 ${active === "h2" ? "" : ""
-                    }`}
+                  className={`text-[100%] pn:max-ss:text-[30%] ss:max-pp:text-[60%] pp:max-sm:text-[80%] font-semibold text-black w-[100%] my-2 ${
+                    active === "h2" ? "" : ""
+                  }`}
                 >
                   {header2}
                 </div>
@@ -805,8 +831,8 @@ function page() {
               backgroundImage: background_color
                 ? null
                 : bgimage
-                  ? `url(${bgimage})`
-                  : null,
+                ? `url(${bgimage})`
+                : null,
               backgroundPosition: "center",
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
@@ -854,8 +880,9 @@ function page() {
                     fontFamily: font2 ? font2 : Name,
                     color: color2 ? color2 : textcolor,
                   }}
-                  className={`text-[100%] pn:max-ss:text-[30%] ss:max-pp:text-[60%] pp:max-sm:text-[80%] font-semibold text-black w-[100%] my-2 ${active === "h2" ? "" : ""
-                    }`}
+                  className={`text-[100%] pn:max-ss:text-[30%] ss:max-pp:text-[60%] pp:max-sm:text-[80%] font-semibold text-black w-[100%] my-2 ${
+                    active === "h2" ? "" : ""
+                  }`}
                 >
                   {header2}
                 </div>
@@ -870,8 +897,9 @@ function page() {
                           // color: textcolor,
                           // fontFamily: Name,
                         }}
-                        className={`text-[100%] pn:max-ss:text-[30%] cursor-pointer ss:max-pp:text-[60%] pp:max-sm:text-[80%] ${active === "h3" ? "" : ""
-                          }`}
+                        className={`text-[100%] pn:max-ss:text-[30%] cursor-pointer ss:max-pp:text-[60%] pp:max-sm:text-[80%] ${
+                          active === "h3" ? "" : ""
+                        }`}
                       >
                         <div
                           style={{
@@ -915,8 +943,8 @@ function page() {
               backgroundImage: background_color
                 ? null
                 : bgimage
-                  ? `url(${bgimage})`
-                  : null,
+                ? `url(${bgimage})`
+                : null,
               backgroundPosition: "center",
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
@@ -954,8 +982,9 @@ function page() {
                     maxWidth: "100%",
                     fontWeight: "bold",
                   }}
-                  className={`text-[200%] pn:max-ss:text-[50%] ss:max-pp:text-[100%] pp:max-sm:text-[160%]  font-semibold text-black w-[100%] ${active === "h1" ? "" : ""
-                    }`}
+                  className={`text-[200%] pn:max-ss:text-[50%] ss:max-pp:text-[100%] pp:max-sm:text-[160%]  font-semibold text-black w-[100%] ${
+                    active === "h1" ? "" : ""
+                  }`}
                 >
                   {header1}
                 </div>
@@ -970,8 +999,9 @@ function page() {
                     width: "100%",
                     marginTop: "2%",
                   }}
-                  className={`text-[100%] pn:max-ss:text-[30%] ss:max-pp:text-[60%] pp:max-sm:text-[80%] font-semibold text-black w-[100%] my-2 ${active === "h2" ? "" : ""
-                    }`}
+                  className={`text-[100%] pn:max-ss:text-[30%] ss:max-pp:text-[60%] pp:max-sm:text-[80%] font-semibold text-black w-[100%] my-2 ${
+                    active === "h2" ? "" : ""
+                  }`}
                 >
                   {header2}
                 </div>
@@ -1077,8 +1107,9 @@ function page() {
                     fontFamily: font2 ? font2 : Name,
                     color: color2 ? color2 : textcolor,
                   }}
-                  className={`text-[100%] pn:max-ss:text-[30%] ss:max-pp:text-[60%] pp:max-sm:text-[80%] font-semibold text-black w-[100%] my-2 ${active === "h2" ? "" : ""
-                    }`}
+                  className={`text-[100%] pn:max-ss:text-[30%] ss:max-pp:text-[60%] pp:max-sm:text-[80%] font-semibold text-black w-[100%] my-2 ${
+                    active === "h2" ? "" : ""
+                  }`}
                 >
                   {header2}
                 </div>
@@ -1093,8 +1124,9 @@ function page() {
                           // color: textcolor,
                           // fontFamily: Name,
                         }}
-                        className={`text-[100%] pn:max-ss:text-[30%] cursor-pointer ss:max-pp:text-[60%] pp:max-sm:text-[80%] ${active === "h3" ? "" : ""
-                          }`}
+                        className={`text-[100%] pn:max-ss:text-[30%] cursor-pointer ss:max-pp:text-[60%] pp:max-sm:text-[80%] ${
+                          active === "h3" ? "" : ""
+                        }`}
                       >
                         <div
                           style={{
@@ -1182,8 +1214,9 @@ function page() {
                     maxWidth: "100%",
                     fontWeight: "bold",
                   }}
-                  className={`text-[200%] pn:max-ss:text-[50%] ss:max-pp:text-[100%] pp:max-sm:text-[160%]  font-semibold text-black w-[100%] ${active === "h1" ? "" : ""
-                    }`}
+                  className={`text-[200%] pn:max-ss:text-[50%] ss:max-pp:text-[100%] pp:max-sm:text-[160%]  font-semibold text-black w-[100%] ${
+                    active === "h1" ? "" : ""
+                  }`}
                 >
                   {header1}
                 </div>
@@ -1199,8 +1232,9 @@ function page() {
                     width: "100%",
                     marginTop: "2%",
                   }}
-                  className={`text-[100%] pn:max-ss:text-[30%] ss:max-pp:text-[60%] pp:max-sm:text-[80%] font-semibold text-black w-[100%] my-2 ${active === "h2" ? "" : ""
-                    }`}
+                  className={`text-[100%] pn:max-ss:text-[30%] ss:max-pp:text-[60%] pp:max-sm:text-[80%] font-semibold text-black w-[100%] my-2 ${
+                    active === "h2" ? "" : ""
+                  }`}
                 >
                   {header2}
                 </div>
@@ -1343,8 +1377,9 @@ function page() {
                             // color: textcolor,
                             // fontFamily: Name,
                           }}
-                          className={`text-[100%] pn:max-ss:text-[30%] cursor-pointer ss:max-pp:text-[60%] pp:max-sm:text-[80%] ${active === "h3" ? "" : ""
-                            }`}
+                          className={`text-[100%] pn:max-ss:text-[30%] cursor-pointer ss:max-pp:text-[60%] pp:max-sm:text-[80%] ${
+                            active === "h3" ? "" : ""
+                          }`}
                         >
                           <div
                             style={{
@@ -1441,8 +1476,9 @@ function page() {
                       maxWidth: "100%",
                       fontWeight: "bold",
                     }}
-                    className={`text-[200%] pn:max-ss:text-[50%] ss:max-pp:text-[100%] pp:max-sm:text-[160%]  font-semibold text-black w-[100%] ${active === "h1" ? "" : ""
-                      }`}
+                    className={`text-[200%] pn:max-ss:text-[50%] ss:max-pp:text-[100%] pp:max-sm:text-[160%]  font-semibold text-black w-[100%] ${
+                      active === "h1" ? "" : ""
+                    }`}
                   >
                     {header1}
                   </div>
@@ -1458,8 +1494,9 @@ function page() {
                       width: "100%",
                       marginTop: "2%",
                     }}
-                    className={`text-[100%] pn:max-ss:text-[30%] ss:max-pp:text-[60%] pp:max-sm:text-[80%] font-semibold text-black w-[100%] my-2 ${active === "h2" ? "" : ""
-                      }`}
+                    className={`text-[100%] pn:max-ss:text-[30%] ss:max-pp:text-[60%] pp:max-sm:text-[80%] font-semibold text-black w-[100%] my-2 ${
+                      active === "h2" ? "" : ""
+                    }`}
                   >
                     {header2}
                   </div>
@@ -1523,9 +1560,11 @@ function page() {
         );
       }
 
-      const canvas = await html2canvas(webRef.current, { useCORS: true, allowTaint: true, });
-      const image = canvas.toDataURL('image/png');
-
+      const canvas = await html2canvas(webRef.current, {
+        useCORS: true,
+        allowTaint: true,
+      });
+      const image = canvas.toDataURL("image/png");
 
       const tempWeb = ReactDOMServer.renderToString(tempWed);
       const tempmob = ReactDOMServer.renderToString(tempPhone);
@@ -1546,13 +1585,13 @@ function page() {
             fontFamily: font1 ? font1 : Name,
             link: font1 ? link1 : Linkes,
             type: "headline",
-            id: fontid1
+            id: fontid1,
           },
           {
             fontFamily: font2 ? font2 : Name,
             link: font2 ? link2 : Linkes,
             type: "description",
-            id: fontid2
+            id: fontid2,
           },
           // {
           //   fontFamily: font3 ? font3 : Name,
@@ -1564,7 +1603,7 @@ function page() {
         button: {
           text: Button1,
           link: redirection,
-          id: buttonid
+          id: buttonid,
         },
         canvasImage: image,
         store: perf.store,
@@ -1613,7 +1652,6 @@ function page() {
 
             <div className="text-[#424242] dark:text-white font-semibold px-2">
               Customization
-
             </div>
           </div>
           <div className="pn:max-sm:hidden w-[50%] flex items-center justify-center gap-2">
@@ -1621,32 +1659,28 @@ function page() {
               onClick={() => {
                 setSwitcher(true);
               }}
-              className={` py-1 w-[100px] flex justify-center items-center rounded-lg gap-2 select-none cursor-pointer duration-100 ${switcher ? "bg-[#EEF2FF] dark:bg-[#1B2431] dark:text-white" : "bg-[#f7f7f7] dark:bg-[#313D4E] dark:text-white"
-                }`}
+              className={` py-1 w-[100px] flex justify-center items-center rounded-lg gap-2 select-none cursor-pointer duration-100 ${
+                switcher
+                  ? "bg-[#EEF2FF] dark:bg-[#1B2431] dark:text-white"
+                  : "bg-[#f7f7f7] dark:bg-[#313D4E] dark:text-white"
+              }`}
             >
-              <HiOutlineDesktopComputer
-              />
-              <div
-              >
-                Web
-              </div>
+              <HiOutlineDesktopComputer />
+              <div>Web</div>
             </div>
 
             <div
               onClick={() => {
                 setSwitcher(false);
               }}
-              className={` py-1 w-[100px] flex justify-center items-center rounded-lg gap-2 select-none cursor-pointer duration-100 ${switcher === false ? "bg-[#EEF2FF] dark:bg-[#1B2431] dark:text-white" : "bg-[#f7f7f7] dark:bg-[#313D4E] dark:text-white"
-                }`}
+              className={` py-1 w-[100px] flex justify-center items-center rounded-lg gap-2 select-none cursor-pointer duration-100 ${
+                switcher === false
+                  ? "bg-[#EEF2FF] dark:bg-[#1B2431] dark:text-white"
+                  : "bg-[#f7f7f7] dark:bg-[#313D4E] dark:text-white"
+              }`}
             >
-              <CiMobile2
-
-              />
-              <div
-
-              >
-                Mobile
-              </div>
+              <CiMobile2 />
+              <div>Mobile</div>
             </div>
           </div>
           <div className="flex justify-center items-center gap-2">
@@ -1659,15 +1693,17 @@ function page() {
             </div> */}
             <div
               onClick={() => deleteTemp()}
-              className={` select-none pn:max-sm:hidden light:bg-[#d03d3d] dark:text-[#d03d3d] text-white px-4 py-1 flex rounded-xl gap-1 mr-2 cursor-pointer font-semibold items-center ${savetemplate ? "  " : "bg-[#8cec74]"
-                }`}
+              className={` select-none pn:max-sm:hidden light:bg-[#d03d3d] dark:text-[#d03d3d] text-white px-4 py-1 flex rounded-xl gap-1 mr-2 cursor-pointer font-semibold items-center ${
+                savetemplate ? "  " : "bg-[#8cec74]"
+              }`}
             >
               <div>Discard</div>
             </div>
             {loading ? (
               <div
-                className={` select-none text-white px-6 py-2 min-w-[100px] hover:bg-[#6366F1] rounded-xl flex justify-center items-center gap-1 mr-2 cursor-pointer font-semibold ${savetemplate ? " bg-[#6366F1] " : "bg-[#8cec74]"
-                  }`}
+                className={` select-none text-white px-6 py-2 min-w-[100px] hover:bg-[#6366F1] rounded-xl flex justify-center items-center gap-1 mr-2 cursor-pointer font-semibold ${
+                  savetemplate ? " bg-[#6366F1] " : "bg-[#8cec74]"
+                }`}
               >
                 <div className="animate-spin">
                   <AiOutlineLoading3Quarters />
@@ -1687,8 +1723,9 @@ function page() {
                 // onClick={() => {
                 //   setComponents(false);
                 // }}
-                className={` select-none text-white px-4 py-1 hover:bg-[#6366F1] flex rounded-xl gap-1 mr-2 cursor-pointer font-semibold items-center ${savetemplate ? " bg-[#6366F1] " : "bg-[#8cec74]"
-                  }`}
+                className={` select-none text-white px-4 py-1 hover:bg-[#6366F1] flex rounded-xl gap-1 mr-2 cursor-pointer font-semibold items-center ${
+                  savetemplate ? " bg-[#6366F1] " : "bg-[#8cec74]"
+                }`}
               >
                 <IoFlashOutline className="font-semibold" />
                 <div>Go Live</div>
@@ -1709,10 +1746,11 @@ function page() {
                   setComponents(false);
                   dispatch(setTrigger(true));
                 }}
-                className={`${component === 1
-                  ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                  : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                  }`}
+                className={`${
+                  component === 1
+                    ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                    : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                }`}
               >
                 {/* <Image
                 src={Templates}
@@ -1720,7 +1758,9 @@ function page() {
                 className="object-contain h-[25px] w-[25px]"
               /> */}
                 <LuLayoutTemplate className="h-[25px] w-[25px] text-[#424242] dark:text-white " />
-                <div className="text-[10px] text-[#424242] dark:text-white  my-1">Templates</div>
+                <div className="text-[10px] text-[#424242] dark:text-white  my-1">
+                  Templates
+                </div>
               </div>
 
               <div
@@ -1730,10 +1770,11 @@ function page() {
                   setComponents(false);
                   dispatch(setTrigger(true));
                 }}
-                className={`${component === 2
-                  ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                  : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                  }`}
+                className={`${
+                  component === 2
+                    ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                    : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                }`}
               >
                 {/* <Image
                 src={textt}
@@ -1741,7 +1782,9 @@ function page() {
                 className="object-contain h-[25px] w-[25px]"
               /> */}
                 <RxText className="h-[25px] w-[25px] text-[#424242] dark:text-white " />
-                <div className="text-[10px] text-[#424242] dark:text-white  my-1">Text</div>
+                <div className="text-[10px] text-[#424242] dark:text-white  my-1">
+                  Text
+                </div>
               </div>
               <div
                 onClick={() => {
@@ -1751,10 +1794,11 @@ function page() {
                   setComponents(false);
                   dispatch(setTrigger(true));
                 }}
-                className={`${component === 3
-                  ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                  : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                  }`}
+                className={`${
+                  component === 3
+                    ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                    : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                }`}
               >
                 {/* <Image
                 src={Elements}
@@ -1762,7 +1806,9 @@ function page() {
                 className="object-contain h-[25px] w-[25px]"
               /> */}
                 <FaBuromobelexperte className="h-[25px] w-[25px] text-[#424242] dark:text-white " />
-                <div className="text-[10px] text-[#424242] dark:text-white  my-1">Elements</div>
+                <div className="text-[10px] text-[#424242] dark:text-white  my-1">
+                  Elements
+                </div>
               </div>
               <div
                 onClick={() => {
@@ -1771,10 +1817,11 @@ function page() {
                   setComponents(false);
                   dispatch(setTrigger(true));
                 }}
-                className={`${component === 4
-                  ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                  : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                  }`}
+                className={`${
+                  component === 4
+                    ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                    : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                }`}
               >
                 {/* <Image
                 src={Loader}
@@ -1782,7 +1829,9 @@ function page() {
                 className="object-contain h-[25px] w-[25px]"
               /> */}
                 <MdOutlineCloudUpload className="h-[25px] w-[25px] text-[#424242] dark:text-white " />
-                <div className="text-[10px] text-[#424242] dark:text-white  my-1">Upload</div>
+                <div className="text-[10px] text-[#424242] dark:text-white  my-1">
+                  Upload
+                </div>
               </div>
               <div
                 onClick={() => {
@@ -1791,10 +1840,11 @@ function page() {
                   setComponents(false);
                   dispatch(setTrigger(true));
                 }}
-                className={`${component === 5
-                  ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                  : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                  }`}
+                className={`${
+                  component === 5
+                    ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                    : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                }`}
               >
                 {/* <Image
                 src={Settings}
@@ -1802,7 +1852,9 @@ function page() {
                 className="object-contain h-[25px] w-[25px]"
               /> */}
                 <IoSettingsOutline className="h-[25px] w-[25px] text-[#424242] dark:text-white " />
-                <div className="text-[10px] text-[#424242] dark:text-white  my-1">Settings</div>
+                <div className="text-[10px] text-[#424242] dark:text-white  my-1">
+                  Settings
+                </div>
               </div>
             </div>
           </div>
@@ -1819,10 +1871,11 @@ function page() {
                     setComponents(false);
                     dispatch(setTrigger(true));
                   }}
-                  className={`${component === 1
-                    ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                    : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                    }`}
+                  className={`${
+                    component === 1
+                      ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                      : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                  }`}
                 >
                   {/* <Image
                 src={Templates}
@@ -1843,10 +1896,11 @@ function page() {
                     setComponents(false);
                     dispatch(setTrigger(true));
                   }}
-                  className={`${component === 2
-                    ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                    : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                    }`}
+                  className={`${
+                    component === 2
+                      ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                      : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                  }`}
                 >
                   {/* <Image
                 src={textt}
@@ -1854,7 +1908,9 @@ function page() {
                 className="object-contain h-[25px] w-[25px]"
               /> */}
                   <RxText className="h-[25px] w-[25px] text-[#424242] dark:text-white " />
-                  <div className="text-[10px] text-[#424242] dark:text-white  my-1">Text</div>
+                  <div className="text-[10px] text-[#424242] dark:text-white  my-1">
+                    Text
+                  </div>
                 </div>
               </DrawerTrigger>
               <DrawerTrigger>
@@ -1865,10 +1921,11 @@ function page() {
                     setComponents(false);
                     dispatch(setTrigger(true));
                   }}
-                  className={`${component === 3
-                    ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                    : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                    }`}
+                  className={`${
+                    component === 3
+                      ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                      : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                  }`}
                 >
                   {/* <Image
                 src={Elements}
@@ -1889,10 +1946,11 @@ function page() {
                     setComponents(false);
                     dispatch(setTrigger(true));
                   }}
-                  className={`${component === 4
-                    ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                    : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                    }`}
+                  className={`${
+                    component === 4
+                      ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                      : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                  }`}
                 >
                   {/* <Image
                 src={Loader}
@@ -1900,7 +1958,9 @@ function page() {
                 className="object-contain h-[25px] w-[25px]"
               /> */}
                   <MdOutlineCloudUpload className="h-[25px] w-[25px] text-[#424242] dark:text-white " />
-                  <div className="text-[10px] text-[#424242] dark:text-white  my-1">Upload</div>
+                  <div className="text-[10px] text-[#424242] dark:text-white  my-1">
+                    Upload
+                  </div>
                 </div>
               </DrawerTrigger>
               <DrawerTrigger>
@@ -1911,10 +1971,11 @@ function page() {
                     setComponents(false);
                     dispatch(setTrigger(true));
                   }}
-                  className={`${component === 5
-                    ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                    : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
-                    }`}
+                  className={`${
+                    component === 5
+                      ? "flex flex-col bg-[#f6f6f6] dark:bg-[#3D4655] dark:text-white  rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                      : "flex flex-col sm:rounded-xl w-[60px] sm:w-[60px] h-[54px] sm:h-[60px] justify-center items-center "
+                  }`}
                 >
                   {/* <Image
                 src={Settings}
@@ -1931,30 +1992,38 @@ function page() {
           </div>
           {/* side Components*/}
           <div
-            className={`dark:bg-[#273142] pn:max-sm:hidden ${components
-              ? "h-[100%] w-[0px] pn:max-sm:w-[100%]  pn:max-sm:h-[0%] pn:max-sm:fixed duration-300"
-              : "h-[100%] w-[500px] pn:max-sm:w-[100%]  pn:max-sm:h-[70%] pn:max-sm:fixed duration-300"
-              }`}
+            className={`dark:bg-[#273142] pn:max-sm:hidden ${
+              components
+                ? "h-[100%] w-[0px] pn:max-sm:w-[100%]  pn:max-sm:h-[0%] pn:max-sm:fixed duration-300"
+                : "h-[100%] w-[500px] pn:max-sm:w-[100%]  pn:max-sm:h-[70%] pn:max-sm:fixed duration-300"
+            }`}
           >
             <div className="h-[100%] w-[100%] sm:flex sm:flex-row-reverse pn:max-sm:w-[100%] pn:max-sm:h-[100%] pn:max-sm:bg-[#fff] pn:max-sm:dark:bg-[#273142] justify-end pn:max-sm:rounded-t-xl">
-
               {/* Template */}
               {component === 1 ? (
                 <div className="h-[100%] w-[98%] pn:max-sm:w-[100%] bg-[#fff] dark:bg-[#273142] pt-2 flex flex-col items-center pn:max-sm:rounded-t-3xl ">
                   {/* Choose template or styles */}
-                  <div className={`bg-[#f1f1f1] dark:bg-[#3c4555] h-[6%] w-[90%] relative ${components ? "p-0" : "p-0.5"} items-center flex rounded-xl dark:text-[#171717] select-none text-[14px]`}>
+                  <div
+                    className={`bg-[#f1f1f1] dark:bg-[#3c4555] h-[6%] w-[90%] relative ${
+                      components ? "p-0" : "p-0.5"
+                    } items-center flex rounded-xl dark:text-[#171717] select-none text-[14px]`}
+                  >
                     <div
-                      className={`duration-150 bg-white dark:bg-[#273142] dark:text-white rounded-xl h-[90%] w-[50%] absolute z-0  ${changetemp === 1 ? "ml-[49%]" : " "
-                        }`}
+                      className={`duration-150 bg-white dark:bg-[#273142] dark:text-white rounded-xl h-[90%] w-[50%] absolute z-0  ${
+                        changetemp === 1 ? "ml-[49%]" : " "
+                      }`}
                     ></div>
                     <div
                       onClick={() => {
                         setChangetemp(0);
                       }}
-                      className={`m-1 z-10  cursor-pointer font-medium ${components && "text-[0px]"} rounded-xl h-[80%] w-[50%] flex justify-center items-center ${changetemp === 0
-                        ? "dark:text-white text-[#000] font-semibold"
-                        : "text-[#868686] dark:text-white cursor-pointer font-medium"
-                        }`}
+                      className={`m-1 z-10  cursor-pointer font-medium ${
+                        components && "text-[0px]"
+                      } rounded-xl h-[80%] w-[50%] flex justify-center items-center ${
+                        changetemp === 0
+                          ? "dark:text-white text-[#000] font-semibold"
+                          : "text-[#868686] dark:text-white cursor-pointer font-medium"
+                      }`}
                     >
                       Templates
                     </div>
@@ -1962,10 +2031,13 @@ function page() {
                       onClick={() => {
                         setChangetemp(1);
                       }}
-                      className={`m-1 z-10 ${components && "text-[0px]"} cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${changetemp === 1
-                        ? "dark:text-white text-[#000] font-semibold"
-                        : "text-[#868686] dark:text-white cursor-pointer font-medium"
-                        }`}
+                      className={`m-1 z-10 ${
+                        components && "text-[0px]"
+                      } cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${
+                        changetemp === 1
+                          ? "dark:text-white text-[#000] font-semibold"
+                          : "text-[#868686] dark:text-white cursor-pointer font-medium"
+                      }`}
                     >
                       Styles
                     </div>
@@ -2033,10 +2105,11 @@ function page() {
               {component === 2 ? (
                 <div className="h-[100%] w-[100%] pn:max-sm:w-[100%] dark:bg-[#273142] bg-[#fff] items-center flex flex-col pn:max-sm:rounded-t-3xl ">
                   <div
-                    className={`${text1 === false
-                      ? "hidden"
-                      : "w-[90%] flex flex-col items-center mt-2"
-                      }`}
+                    className={`${
+                      text1 === false
+                        ? "hidden"
+                        : "w-[90%] flex flex-col items-center mt-2"
+                    }`}
                   >
                     {active === "h1" ? (
                       <>
@@ -2083,10 +2156,11 @@ function page() {
                     )}
                   </div>
                   <div
-                    className={` ${text1 === false
-                      ? "h-[100%] w-[90%] justify-evenly mt-2"
-                      : "h-[80%] w-[90%] justify-evenly mt-2"
-                      }`}
+                    className={` ${
+                      text1 === false
+                        ? "h-[100%] w-[90%] justify-evenly mt-2"
+                        : "h-[80%] w-[90%] justify-evenly mt-2"
+                    }`}
                   >
                     {" "}
                     <div className="bg-[#f7f7f7] dark:bg-[#313D4E] light:border rounded-xl my-2 h-[40px] flex justify-evenly overflow-hidden w-full">
@@ -2113,15 +2187,22 @@ function page() {
                   {/* Choose Image,background or button */}
                   <div className="bg-[#f1f1f1] dark:bg-[#3c4555] h-[6%] w-[90%] relative p-0.5 items-center flex rounded-xl dark:text-[#171717] select-none text-[14px]">
                     <div
-                      className={`duration-150 bg-white dark:bg-[#273142] dark:text-white rounded-xl h-[90%] ${change === 0 && "ml-[0%]"} ${change === 1 && "ml-[33.33%]"} 
-                      ${change === 2 && "ml-[65.66%]"} w-[33.33%] absolute z-0  `}
+                      className={`duration-150 bg-white dark:bg-[#273142] dark:text-white rounded-xl h-[90%] ${
+                        change === 0 && "ml-[0%]"
+                      } ${change === 1 && "ml-[33.33%]"} 
+                      ${
+                        change === 2 && "ml-[65.66%]"
+                      } w-[33.33%] absolute z-0  `}
                     ></div>
                     <div
                       onClick={() => {
                         setChange(0);
                       }}
-                      className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 0 ? "dark:text-white text-[#000] font-semibold" : " text-[#868686] dark:text-white "
-                        }`}
+                      className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${
+                        change === 0
+                          ? "dark:text-white text-[#000] font-semibold"
+                          : " text-[#868686] dark:text-white "
+                      }`}
                     >
                       Image
                     </div>
@@ -2129,8 +2210,11 @@ function page() {
                       onClick={() => {
                         setChange(1);
                       }}
-                      className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 1 ? "dark:text-white text-[#000] font-semibold" : " text-[#868686] dark:text-white "
-                        }`}
+                      className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${
+                        change === 1
+                          ? "dark:text-white text-[#000] font-semibold"
+                          : " text-[#868686] dark:text-white "
+                      }`}
                     >
                       Background
                     </div>
@@ -2138,8 +2222,11 @@ function page() {
                       onClick={() => {
                         setChange(2);
                       }}
-                      className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 2 ? "dark:text-white text-[#000] font-semibold" : " text-[#868686] dark:text-white "
-                        }`}
+                      className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${
+                        change === 2
+                          ? "dark:text-white text-[#000] font-semibold"
+                          : " text-[#868686] dark:text-white "
+                      }`}
                     >
                       Button
                     </div>
@@ -2175,13 +2262,13 @@ function page() {
                                 <div
                                   key={i}
                                   onClick={() => {
-                                    setImageId(i)
+                                    setImageId(i);
                                     dispatch(setimage(p.link));
                                     if (p.name.includes("cover")) {
-                                      dispatch(setObjectType("cover"))
+                                      dispatch(setObjectType("cover"));
                                     }
                                     if (p.name.includes("contain")) {
-                                      dispatch(setObjectType("contain"))
+                                      dispatch(setObjectType("contain"));
                                     }
                                     if (p.premium) {
                                       if (data.memberships === "Free") {
@@ -2195,11 +2282,21 @@ function page() {
                                       }
                                     }
                                   }}
-                                  className={`flex items-center group relative hover:border-[#00f] hover:border-2 justify-center rounded-lg w-[140px] h-[140px] ${style.customScrollbar} overflow-auto ${imageid === i ? "border-[#00f] border-2" : null}  duration-75 select-none cursor-pointer dark:bg-[#313D4E] bg-[#fafafa]`}
+                                  className={`flex items-center group relative hover:border-[#00f] hover:border-2 justify-center rounded-lg w-[140px] h-[140px] ${
+                                    style.customScrollbar
+                                  } overflow-auto ${
+                                    imageid === i
+                                      ? "border-[#00f] border-2"
+                                      : null
+                                  }  duration-75 select-none cursor-pointer dark:bg-[#313D4E] bg-[#fafafa]`}
                                 >
-                                  {imageid === i && <div className={` absolute z-10 bottom-1 right-1`}>
-                                    <CiCircleCheck className="text-[#00f]" />
-                                  </div>}
+                                  {imageid === i && (
+                                    <div
+                                      className={` absolute z-10 bottom-1 right-1`}
+                                    >
+                                      <CiCircleCheck className="text-[#00f]" />
+                                    </div>
+                                  )}
                                   <div className="w-[90%] h-[90%] relative">
                                     <img
                                       src={p.link}
@@ -2231,13 +2328,13 @@ function page() {
                                   <div
                                     key={i}
                                     onClick={() => {
-                                      setImageId(i)
+                                      setImageId(i);
                                       dispatch(setimage(p.link));
                                       if (p.name.includes("cover")) {
-                                        dispatch(setObjectType("cover"))
+                                        dispatch(setObjectType("cover"));
                                       }
                                       if (p.name.includes("contain")) {
-                                        dispatch(setObjectType("contain"))
+                                        dispatch(setObjectType("contain"));
                                       }
                                       if (p.premium) {
                                         if (data.memberships === "Free") {
@@ -2253,11 +2350,21 @@ function page() {
                                         }
                                       }
                                     }}
-                                    className={`flex items-center group relative hover:border-[#00f] hover:border-2 justify-center rounded-lg w-[140px] h-[140px] ${style.customScrollbar} overflow-auto ${imageid === i ? "border-[#00f] border-2" : null}  duration-75 select-none cursor-pointer dark:bg-[#313D4E] bg-[#fafafa]`}
+                                    className={`flex items-center group relative hover:border-[#00f] hover:border-2 justify-center rounded-lg w-[140px] h-[140px] ${
+                                      style.customScrollbar
+                                    } overflow-auto ${
+                                      imageid === i
+                                        ? "border-[#00f] border-2"
+                                        : null
+                                    }  duration-75 select-none cursor-pointer dark:bg-[#313D4E] bg-[#fafafa]`}
                                   >
-                                    {imageid === i && <div className={` absolute z-10 bottom-1 right-1`}>
-                                      <CiCircleCheck className="text-[#00f]" />
-                                    </div>}
+                                    {imageid === i && (
+                                      <div
+                                        className={` absolute z-10 bottom-1 right-1`}
+                                      >
+                                        <CiCircleCheck className="text-[#00f]" />
+                                      </div>
+                                    )}
                                     <div className="w-[90%] h-[90%]  relative">
                                       <img
                                         src={p.link}
@@ -2285,28 +2392,6 @@ function page() {
                             </>
                           )}
                         </div>
-                        {/* <div>Recent Image</div>
-                      <div className={`w-[100%] pn:max-sm:w-[100%] grid grid-cols-2 ${style.customScrollbar} overflow-auto h-[100%]`}>
-                        {limg &&
-                          limg.map((p, i) => (
-                            <div
-                              onClick={() => {
-                                dispatch(setimage(p));
-                              }}
-                              className={`flex items-center justify-center w-[140px] h-[140px] ${style.customScrollbar} overflow-auto hover:bg-[#28292c] hover:shadow-lg hover:scale-105 duration-75 select-none cursor-pointer bg-slate-200`}
-                            >
-
-                              <div className="w-[90%] h-[90%]">
-                                <img
-                                  key={i}
-                                  src={p}
-                                  alt="pic"
-                                  className="p-2 flex-row flex shadow-lg h-full w-full rounded-sm bg-slate-200 "
-                                />
-                              </div>
-                            </div>
-                          ))}
-                      </div> */}
                       </div>
                     ) : null}
                     {/* backgrounds */}
@@ -2358,7 +2443,9 @@ function page() {
                             />
                           </div>
                         )}
-                        {showbutton && <div className=" border-b-[1px] border-dotted w-[100%] py-1" />}
+                        {showbutton && (
+                          <div className=" border-b-[1px] border-dotted w-[100%] py-1" />
+                        )}
                         {showbutton && (
                           <div className="mt-2">
                             <div className="text-[#9c9c9c] text-[14px]">
@@ -2367,14 +2454,16 @@ function page() {
                             <input
                               value={redirection}
                               onChange={(e) => {
-                                dispatch(setRedirection((e.target.value)));
+                                dispatch(setRedirection(e.target.value));
                               }}
                               placeholder="Enter link "
                               className=" bg-[#f7f7f7] dark:bg-[#313D4E] dark:text-white px-2 light:border rounded-xl text-[#424242] w-[100%] p-1 max-h-[200px] outline-none "
                             />
                           </div>
                         )}
-                        {showbutton && <div className=" border-b-[1px] border-dotted w-[100%] py-1" />}
+                        {showbutton && (
+                          <div className=" border-b-[1px] border-dotted w-[100%] py-1" />
+                        )}
                         {showbutton && (
                           <div className=" w-full">
                             <div className="pt-2 text-[14px] text-[#9c9c9c]">
@@ -2395,7 +2484,6 @@ function page() {
                   <div className="h-[80%] w-[90%] justify-evenly mt-4">
                     {/* Image */}
                     <div className="h-[550px] w-[100%]">
-
                       {/* <div className=" items-center flex justify-center">
                         <div className="grid bg-[#f4f4f4] text-[#424242] w-full grid-col-1 gap-3 p-4 rounded-xl">
                           <div className="font-semibold ">Upload {uploadtype === "image" ? "Photo" : "Background Images"}</div>
@@ -2463,7 +2551,9 @@ function page() {
                       </div> */}
 
                       {/* <div className="border-b-[0.5px] w-full border-dotted mt-2"></div> */}
-                      <div className={`flex flex-col max-h-[90vh] min-h-[90vh] overflow-y-scroll no-scrollbar`}>
+                      <div
+                        className={`flex flex-col max-h-[90vh] min-h-[90vh] overflow-y-scroll no-scrollbar`}
+                      >
                         {/* <div className="flex justify-between w-full gap-3 items-center">
                           <div onClick={() => setUploadtype("image")} className={`w-full ${uploadtype === "image" ? "border-b-2 border-blue-500" : ""}  pb-1 flex text-[#9c9c9c] font-medium justify-center items-center text-sm `}>Images</div>
                           <div onClick={() => setUploadtype("background")} className={`w-full ${uploadtype === "background" ? "border-b-2 border-blue-500" : ""} pb-1 flex text-[#9c9c9c] font-medium justify-center items-center text-sm `}>Background Images</div>
@@ -2471,24 +2561,27 @@ function page() {
 
                         <div className="bg-[#f1f1f1] dark:bg-[#3c4555] relative p-0.5 items-center flex rounded-xl dark:text-[#171717] select-none text-[14px]">
                           <div
-                            className={`duration-150 dark:bg-[#273142] dark:text-white bg-white rounded-xl h-[90%] w-[50%] absolute z-0  ${uploadtype === "background" ? "ml-[49%]" : " "
-                              }`}
+                            className={`duration-150 dark:bg-[#273142] dark:text-white bg-white rounded-xl h-[90%] w-[50%] absolute z-0  ${
+                              uploadtype === "background" ? "ml-[49%]" : " "
+                            }`}
                           ></div>
                           <div
                             onClick={() => setUploadtype("image")}
-                            className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${uploadtype === "image"
-                              ? "dark:text-white text-[#000] font-semibold"
-                              : "text-[#868686] dark:text-white cursor-pointer font-medium"
-                              }`}
+                            className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${
+                              uploadtype === "image"
+                                ? "dark:text-white text-[#000] font-semibold"
+                                : "text-[#868686] dark:text-white cursor-pointer font-medium"
+                            }`}
                           >
                             Images
                           </div>
                           <div
                             onClick={() => setUploadtype("background")}
-                            className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${uploadtype === "background"
-                              ? "dark:text-white text-[#000] font-semibold"
-                              : "text-[#868686] dark:text-white cursor-pointer font-medium"
-                              }`}
+                            className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${
+                              uploadtype === "background"
+                                ? "dark:text-white text-[#000] font-semibold"
+                                : "text-[#868686] dark:text-white cursor-pointer font-medium"
+                            }`}
                           >
                             Background
                           </div>
@@ -2500,17 +2593,16 @@ function page() {
                             name="myFile"
                             id="fileInput"
                             placeholder="Upload file"
-                            onChange={(e) => {
-
-                              uploaderPics(e.target.files[0])
-
-                            }
+                            onChange={
+                              (e) => {
+                                uploaderPics(e.target.files[0]);
+                              }
                               //  setFile()
                             }
                             className="w-[100%] self-start hidden text-[#424242]"
                           />
 
-                          {load ?
+                          {load ? (
                             //  <button
                             //   className="bg-blue-800 p-2 flex justify-center w-full text-center  items-center text-white px-5 rounded-xl font-semibold"
                             //   disabled
@@ -2520,114 +2612,189 @@ function page() {
                             //   </div>
                             // </button>
                             <div className="flex justify-between gap-4 bg-[#e2e2e2] text-black p-2 px-3 rounded-xl items-center">
-                              <div className="text-xs w-full font-semibold">Upload Your Images</div>
+                              <div className="text-xs w-full font-semibold">
+                                Upload Your Images
+                              </div>
                               <div className="p-1 px-3 bg-[#4880FF] text-white text-sm  flex justify-center w-[120px] py-2 text-center items-center font-semibold rounded-lg">
                                 <div className="animate-spin">
                                   <AiOutlineLoading3Quarters />
                                 </div>
                               </div>
                             </div>
-                            : <div className="flex justify-between gap-4 bg-[#e2e2e2] text-black p-2 px-3 rounded-xl items-center">
-                              <div className="text-xs font-semibold">Upload Your {uploadtype === "image" ? "Images" : "Backgrounds"}</div>
+                          ) : (
+                            <div className="flex justify-between gap-4 bg-[#e2e2e2] text-black p-2 px-3 rounded-xl items-center">
+                              <div className="text-xs font-semibold">
+                                Upload Your{" "}
+                                {uploadtype === "image"
+                                  ? "Images"
+                                  : "Backgrounds"}
+                              </div>
 
-                              {
-                                uploadtype === "image" ?
-                                  <>
-                                    {
-                                      (memberships == "Free" && link.length >= 5) ? <div onClick={() => toast.error("Max Image Upload Reached!")} className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg">
-                                        <div>Upload</div>
-                                        <FaCrown className=" text-orange-300 " />
-                                      </div> : <label htmlFor="fileInput" className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg">
-                                        <div>Upload</div>
-
-                                      </label>
-                                    }
-                                  </>
-                                  :
-                                  <>
-                                    {
-                                      (memberships == "Free" && blinks.length >= 5) ? <div onClick={() => toast.error("Max Backgrounds Upload Reached!")} className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg">
-                                        <div>Upload</div>
-                                        <FaCrown className=" text-orange-300 " />
-                                      </div> : <label htmlFor="fileInput" className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg">
-                                        <div>Upload</div>
-
-                                      </label>
-                                    }
-                                  </>
-                              }
-
+                              {uploadtype === "image" ? (
+                                <>
+                                  {memberships == "Free" &&
+                                  link.length >= 10 ? (
+                                    <div
+                                      onClick={() =>
+                                        toast.error("Max Image Upload Reached!")
+                                      }
+                                      className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg"
+                                    >
+                                      <div>Upload</div>
+                                      <FaCrown className=" text-orange-300 " />
+                                    </div>
+                                  ) : (
+                                    <label
+                                      htmlFor="fileInput"
+                                      className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg"
+                                    >
+                                      <div>Upload</div>
+                                    </label>
+                                  )}
+                                </>
+                              ) : (
+                                <>
+                                  {memberships == "Free" &&
+                                  blinks.length >= 10 ? (
+                                    <div
+                                      onClick={() =>
+                                        toast.error(
+                                          "Max Backgrounds Upload Reached!"
+                                        )
+                                      }
+                                      className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg"
+                                    >
+                                      <div>Upload</div>
+                                      <FaCrown className=" text-orange-300 " />
+                                    </div>
+                                  ) : (
+                                    <label
+                                      htmlFor="fileInput"
+                                      className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg"
+                                    >
+                                      <div>Upload</div>
+                                    </label>
+                                  )}
+                                </>
+                              )}
                             </div>
-                          }
+                          )}
                         </div>
-                        {
-                          uploadtype === "image" ?
-                            <div>
-                              <div className="text-[#9c9c9c] dark:text-white font-medium text-[14px] mt-2">
-                                Uploaded Images
-                              </div>
-                              <div className="w-full pn:max-sm:w-[100%] ">
-                                <div
-                                  className={`w-[100%] pn:max-sm:w-[100%] gap-3 grid grid-cols-2 h-[100%]`}
-                                >
-                                  {link &&
-                                    link.map((m, i) => (
-                                      <div
-                                        key={i}
-                                        onClick={() => {
-                                          setUserImageId(i)
-                                          dispatch(setimage(m));
-                                        }}
-                                        className={`flex items-center rounded-xl relative group hover:border hover:border-[#00f] ${userImageId === i ? "border border-[#00f]" : null} justify-center w-full mt-1 h-[130px] duration-75 select-none cursor-pointer dark:bg-[#313D4E] bg-[#fafafa]`}
-                                      >
-                                        {userImageId === i && <div className={` absolute z-10 bottom-1 right-1`}>
+                        {uploadtype === "image" ? (
+                          <div>
+                            <div className="text-[#9c9c9c] dark:text-white font-medium text-[14px] mt-2">
+                              Uploaded Images
+                            </div>
+                            <div className="w-full pn:max-sm:w-[100%] ">
+                              <div
+                                className={`w-[100%] pn:max-sm:w-[100%] gap-3 grid grid-cols-2 h-[100%]`}
+                              >
+                                {link &&
+                                  link.map((m, i) => (
+                                    <div
+                                      key={i}
+                                      onClick={() => {
+                                        setUserImageId(i);
+                                        dispatch(setimage(m));
+                                        if (m.premium) {
+                                          if (memberships === "Free") {
+                                            dispatch(
+                                              setPremium({ type: "image" })
+                                            );
+                                          }
+                                        } else {
+                                          if (memberships === "Free") {
+                                            dispatch(
+                                              setRemovePremium({
+                                                type: "image",
+                                              })
+                                            );
+                                          }
+                                        }
+                                      }}
+                                      className={`flex items-center rounded-xl relative group hover:border hover:border-[#00f] ${
+                                        userImageId === i
+                                          ? "border border-[#00f]"
+                                          : null
+                                      } justify-center w-full mt-1 h-[130px] duration-75 select-none cursor-pointer dark:bg-[#313D4E] bg-[#fafafa]`}
+                                    >
+                                      {userImageId === i && (
+                                        <div
+                                          className={` absolute z-10 bottom-1 right-1`}
+                                        >
                                           <CiCircleCheck className="text-[#00f]" />
-                                        </div>}
-                                        <div className="w-[90%] h-[90%]  rounded-xl">
-                                          <img
-                                            src={m}
-                                            alt="pic"
-                                            className="p-2 flex-row flex h-full  rounded-xl w-full dark:bg-[#313D4E] bg-[#fafafa] "
-                                          />
                                         </div>
+                                      )}
+                                      <div className="w-[90%] h-[90%]  rounded-xl">
+                                        <img
+                                          src={m}
+                                          alt="pic"
+                                          className="p-2 flex-row flex h-full  rounded-xl w-full dark:bg-[#313D4E] bg-[#fafafa] "
+                                        />
                                       </div>
-                                    ))}
-                                </div>
-                              </div>
-                            </div> : <div>
-                              <div className="text-[#9c9c9c] font-medium text-[14px] mt-2">
-                                Background Images
-                              </div>
-                              <div className="h-[350px] w-full pn:max-sm:w-[100%] ">
-                                <div
-                                  className={`w-[100%] pn:max-sm:w-[100%] gap-3 grid grid-cols-2 h-[100%]`}
-                                >
-                                  {blinks &&
-                                    blinks.map((m, i) => (
-                                      <div
-                                        key={i}
-                                        onClick={() => {
-                                          setBackId(i)
-                                          dispatch(setBgImage(m));
-                                        }}
-                                        className={`flex items-center justify-center w-full relative group hover:border hover:border-[#00f] rounded-xl mt-1 h-[130px] duration-75 select-none cursor-pointer ${backid === i ? "border border-[#00f]" : null} dark:bg-[#313D4E] bg-[#fafafa]`}
-                                      >
-                                        {backid === i && <div className={` absolute z-10 bottom-1 right-1`}>
-                                          <CiCircleCheck className="text-[#00f]" />
-                                        </div>}
-                                        <div className="w-[90%] h-[90%] rounded-xl">
-                                          <img
-                                            src={m}
-                                            alt="pic"
-                                            className="p-2 flex-row flex rounded-xl h-full w-full dark:bg-[#313D4E] bg-[#fafafa] "
-                                          />
-                                        </div>
-                                      </div>
-                                    ))}
-                                </div>
+                                    </div>
+                                  ))}
                               </div>
                             </div>
-                        }
+                          </div>
+                        ) : (
+                          <div>
+                            <div className="text-[#9c9c9c] font-medium text-[14px] mt-2">
+                              Background Images
+                            </div>
+                            <div className="h-[350px] w-full pn:max-sm:w-[100%] ">
+                              <div
+                                className={`w-[100%] pn:max-sm:w-[100%] gap-3 grid grid-cols-2 h-[100%]`}
+                              >
+                                {blinks &&
+                                  blinks.map((m, i) => (
+                                    <div
+                                      key={i}
+                                      onClick={() => {
+                                        setBackId(i);
+                                        dispatch(setBgImage(m));
+                                        if (m.premium) {
+                                          if (memberships === "Free") {
+                                            dispatch(
+                                              setPremium({ type: "bgimage" })
+                                            );
+                                          }
+                                        } else {
+                                          if (memberships === "Free") {
+                                            dispatch(
+                                              setRemovePremium({
+                                                type: "bgimage",
+                                              })
+                                            );
+                                          }
+                                        }
+                                      }}
+                                      className={`flex items-center justify-center w-full relative group hover:border hover:border-[#00f] rounded-xl mt-1 h-[130px] duration-75 select-none cursor-pointer ${
+                                        backid === i
+                                          ? "border border-[#00f]"
+                                          : null
+                                      } dark:bg-[#313D4E] bg-[#fafafa]`}
+                                    >
+                                      {backid === i && (
+                                        <div
+                                          className={` absolute z-10 bottom-1 right-1`}
+                                        >
+                                          <CiCircleCheck className="text-[#00f]" />
+                                        </div>
+                                      )}
+                                      <div className="w-[90%] h-[90%] rounded-xl">
+                                        <img
+                                          src={m}
+                                          alt="pic"
+                                          className="p-2 flex-row flex rounded-xl h-full w-full dark:bg-[#313D4E] bg-[#fafafa] "
+                                        />
+                                      </div>
+                                    </div>
+                                  ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                     {/* backgrounds */}
@@ -2644,19 +2811,29 @@ function page() {
                       </div>
                       <div className="border-b-[0.5px] border-dotted" />
                       <div className="flex flex-col gap-4 px-2 my-3">
-                        {(memberships === "Premium" || memberships === "Pro") &&
-                          < div className="w-full flex flex-col">
-                            <div className="text-[15px] font-semibold">Add Custom Your Domains</div>
+                        {(memberships === "Premium" ||
+                          memberships === "Pro") && (
+                          <div className="w-full flex flex-col">
+                            <div className="text-[15px] font-semibold">
+                              Add Custom Your Domains
+                            </div>
                             <div className="flex border-b border-white w-full  justify-center items-center gap-1">
-                              <input type="text"
+                              <input
+                                type="text"
                                 value={domain}
                                 onChange={(e) => setDomain(e.target.value)}
                                 placeholder="Add Your Domains"
-                                className="outline-none bg-transparent placeholder:text-sm w-full placeholder:text-[#9c9c9c]" />
-                              <div onClick={applyDomains} className="text-sm cursor-pointer py-2  rounded-xl  font-medium">Save</div>
+                                className="outline-none bg-transparent placeholder:text-sm w-full placeholder:text-[#9c9c9c]"
+                              />
+                              <div
+                                onClick={applyDomains}
+                                className="text-sm cursor-pointer py-2  rounded-xl  font-medium"
+                              >
+                                Save
+                              </div>
                             </div>
                           </div>
-                        }
+                        )}
                         <div className="flex flex-col w-full">
                           <div className="font-semibold">
                             Show About Section
@@ -2780,8 +2957,9 @@ function page() {
                         <div className="flex flex-col w-full">
                           <div
                             onClick={() => deleteTemp()}
-                            className={`sm:hidden select-none justify-center text-white px-4 py-1 flex rounded-xl gap-1 mr-2 cursor-pointer font-semibold items-center ${savetemplate ? " bg-[#d03d3d] " : "bg-[#8cec74]"
-                              }`}
+                            className={`sm:hidden select-none justify-center text-white px-4 py-1 flex rounded-xl gap-1 mr-2 cursor-pointer font-semibold items-center ${
+                              savetemplate ? " bg-[#d03d3d] " : "bg-[#8cec74]"
+                            }`}
                           >
                             <div>Discard</div>
                           </div>
@@ -2808,24 +2986,26 @@ function page() {
 
           {/* side Components for phone */}
           <div className="sm:hidden">
-            <DrawerContent ref={drawerRef} >
+            <DrawerContent ref={drawerRef}>
               <div className="h-[100%] w-[100%] sm:flex sm:flex-row-reverse pn:max-sm:w-[100%] pn:max-sm:h-[500px] dark:bg-[#273142] pn:max-sm:bg-[#fefefe] justify-end pn:max-sm:rounded-t-xl">
                 {component === 1 ? (
                   <div className="h-[100%] w-[98%] pn:max-sm:w-[100%] dark:bg-[#273142] bg-[#fff] flex flex-col items-center pn:max-sm:rounded-t-3xl ">
                     {/* Choose template or styles */}
                     <div className="bg-[#f1f1f1] dark:bg-[#3c4555] h-[6%] w-[90%] relative mt-2 p-0.5 items-center flex rounded-xl dark:text-[#171717] select-none text-[14px]">
                       <div
-                        className={`duration-150 dark:bg-[#273142] dark:text-white bg-white rounded-xl h-[90%] w-[50%] absolute z-0  ${changetemp === 1 ? "ml-[49%]" : " "
-                          }`}
+                        className={`duration-150 dark:bg-[#273142] dark:text-white bg-white rounded-xl h-[90%] w-[50%] absolute z-0  ${
+                          changetemp === 1 ? "ml-[49%]" : " "
+                        }`}
                       ></div>
                       <div
                         onClick={() => {
                           setChangetemp(0);
                         }}
-                        className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${changetemp === 0
-                          ? "dark:text-white text-[#000] font-semibold"
-                          : "text-[#868686] dark:text-white cursor-pointer font-medium"
-                          }`}
+                        className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${
+                          changetemp === 0
+                            ? "dark:text-white text-[#000] font-semibold"
+                            : "text-[#868686] dark:text-white cursor-pointer font-medium"
+                        }`}
                       >
                         Templates
                       </div>
@@ -2833,10 +3013,11 @@ function page() {
                         onClick={() => {
                           setChangetemp(1);
                         }}
-                        className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${changetemp === 1
-                          ? "dark:text-white text-[#000] font-semibold"
-                          : "text-[#868686] dark:text-white cursor-pointer font-medium"
-                          }`}
+                        className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${
+                          changetemp === 1
+                            ? "dark:text-white text-[#000] font-semibold"
+                            : "text-[#868686] dark:text-white cursor-pointer font-medium"
+                        }`}
                       >
                         Styles
                       </div>
@@ -2854,7 +3035,7 @@ function page() {
                             onClick={() => {
                               // setTemplate(1);
                               dispatch(setTemplate(1));
-                              dispatch(setTrigger(false))
+                              dispatch(setTrigger(false));
                             }}
                             className="w-[100%] hover:bg-[#28292c] hover:shadow-lg duration-75 h-[100px] bg-[#f7f7f7] p-1 my-2"
                           />
@@ -2863,7 +3044,7 @@ function page() {
                             onClick={() => {
                               // setTemplate(2);
                               dispatch(setTemplate(2));
-                              dispatch(setTrigger(false))
+                              dispatch(setTrigger(false));
                             }}
                             className="w-[100%] h-[100px] hover:bg-[#28292c] hover:shadow-lg duration-75 bg-[#f7f7f7] p-1 my-2"
                           />
@@ -2872,7 +3053,7 @@ function page() {
                             onClick={() => {
                               // setTemplate(3);
                               dispatch(setTemplate(3));
-                              dispatch(setTrigger(false))
+                              dispatch(setTrigger(false));
                             }}
                             className="w-[100%] h-[100px] hover:bg-[#28292c] hover:shadow-lg duration-75 bg-[#f7f7f7] p-1 my-2"
                           />
@@ -2881,7 +3062,7 @@ function page() {
                             onClick={() => {
                               // setTemplate(4);
                               dispatch(setTemplate(4));
-                              dispatch(setTrigger(false))
+                              dispatch(setTrigger(false));
                             }}
                             className="w-[100%] h-[100px] hover:bg-[#28292c] hover:shadow-lg duration-75 bg-[#f7f7f7] p-1 my-2"
                           />
@@ -2890,7 +3071,7 @@ function page() {
                             onClick={() => {
                               // setTemplate(5);
                               dispatch(setTemplate(5));
-                              dispatch(setTrigger(false))
+                              dispatch(setTrigger(false));
                             }}
                             className="w-[100%] h-[100px] hover:bg-[#28292c] hover:shadow-lg duration-75 bg-[#f7f7f7] p-1 my-2"
                           />
@@ -2908,10 +3089,11 @@ function page() {
                 {component === 2 ? (
                   <div className="h-[100%] w-[100%] pn:max-sm:w-[100%] overflow-auto dark:bg-[#273142] bg-[#fff] items-center flex flex-col pn:max-sm:rounded-t-3xl ">
                     <div
-                      className={`${text1 === false
-                        ? "hidden"
-                        : "w-[90%] flex flex-col items-center mt-2"
-                        }`}
+                      className={`${
+                        text1 === false
+                          ? "hidden"
+                          : "w-[90%] flex flex-col items-center mt-2"
+                      }`}
                     >
                       {active === "h1" ? (
                         <>
@@ -2958,10 +3140,11 @@ function page() {
                       )}
                     </div>
                     <div
-                      className={` ${text1 === false
-                        ? "h-[100%] w-[90%] justify-evenly mt-2"
-                        : "h-[80%] w-[90%] justify-evenly mt-2"
-                        }`}
+                      className={` ${
+                        text1 === false
+                          ? "h-[100%] w-[90%] justify-evenly mt-2"
+                          : "h-[80%] w-[90%] justify-evenly mt-2"
+                      }`}
                     >
                       {" "}
                       <div className="bg-[#f7f7f7] dark:bg-[#313D4E] light:border rounded-xl my-2 h-[40px] flex justify-evenly overflow-hidden w-full">
@@ -2987,15 +3170,20 @@ function page() {
                     {/* Choose Image,background or button */}
                     <div className="bg-[#f1f1f1] dark:bg-[#3c4555] h-[6%] w-[90%] mt-2 relative p-0.5 items-center flex rounded-xl dark:text-[#171717] select-none text-[14px]">
                       <div
-                        className={`duration-150 bg-white dark:bg-[#273142] rounded-xl h-[90%] w-[33.33%] absolute z-0 ${change === 0 && "ml-[0%]"} ${change === 1 && "ml-[33.33%]"} 
+                        className={`duration-150 bg-white dark:bg-[#273142] rounded-xl h-[90%] w-[33.33%] absolute z-0 ${
+                          change === 0 && "ml-[0%]"
+                        } ${change === 1 && "ml-[33.33%]"} 
                         ${change === 2 && "ml-[65.66%]"}`}
                       ></div>
                       <div
                         onClick={() => {
                           setChange(0);
                         }}
-                        className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 0 ? "dark:text-white text-[#000] font-semibold" : " text-[#868686] dark:text-white "
-                          }`}
+                        className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${
+                          change === 0
+                            ? "dark:text-white text-[#000] font-semibold"
+                            : " text-[#868686] dark:text-white "
+                        }`}
                       >
                         Image
                       </div>
@@ -3003,8 +3191,11 @@ function page() {
                         onClick={() => {
                           setChange(1);
                         }}
-                        className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 1 ? "dark:text-white text-[#000] font-semibold" : " text-[#868686] dark:text-white "
-                          }`}
+                        className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${
+                          change === 1
+                            ? "dark:text-white text-[#000] font-semibold"
+                            : " text-[#868686] dark:text-white "
+                        }`}
                       >
                         Background
                       </div>
@@ -3012,8 +3203,11 @@ function page() {
                         onClick={() => {
                           setChange(2);
                         }}
-                        className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${change === 2 ? "dark:text-white text-[#000] font-semibold" : "text-[#868686] dark:text-white "
-                          }`}
+                        className={`text-[12px] z-10 rounded-xl w-[97%] flex h-[90%] justify-center items-center ${
+                          change === 2
+                            ? "dark:text-white text-[#000] font-semibold"
+                            : "text-[#868686] dark:text-white "
+                        }`}
                       >
                         Button
                       </div>
@@ -3050,23 +3244,32 @@ function page() {
                                     onClick={() => {
                                       if (!p.premium) {
                                         dispatch(setimage(p.link));
-
                                       } else {
                                         console.log("membership");
                                       }
                                       if (p.name.includes("cover")) {
-                                        dispatch(setObjectType("cover"))
+                                        dispatch(setObjectType("cover"));
                                       }
                                       if (p.name.includes("contain")) {
-                                        dispatch(setObjectType("contain"))
+                                        dispatch(setObjectType("contain"));
                                       }
-                                      dispatch(setTrigger(false))
+                                      dispatch(setTrigger(false));
                                     }}
-                                    className={`flex items-center group relative hover:border-[#00f] hover:border-2 justify-center rounded-lg w-[140px] h-[140px] ${style.customScrollbar} overflow-auto ${imageid === i ? "border-[#00f] border-2" : null}  duration-75 select-none cursor-pointer dark:bg-[#313D4E] bg-[#fafafa]`}
+                                    className={`flex items-center group relative hover:border-[#00f] hover:border-2 justify-center rounded-lg w-[140px] h-[140px] ${
+                                      style.customScrollbar
+                                    } overflow-auto ${
+                                      imageid === i
+                                        ? "border-[#00f] border-2"
+                                        : null
+                                    }  duration-75 select-none cursor-pointer dark:bg-[#313D4E] bg-[#fafafa]`}
                                   >
-                                    {imageid === i && <div className={` absolute z-10 bottom-1 right-1`}>
-                                      <CiCircleCheck className="text-[#00f]" />
-                                    </div>}
+                                    {imageid === i && (
+                                      <div
+                                        className={` absolute z-10 bottom-1 right-1`}
+                                      >
+                                        <CiCircleCheck className="text-[#00f]" />
+                                      </div>
+                                    )}
                                     <div className="w-[100%] h-[100%] relative">
                                       <img
                                         src={p.link}
@@ -3104,18 +3307,28 @@ function page() {
                                           );
                                         }
                                         if (p.name.includes("cover")) {
-                                          dispatch(setObjectType("cover"))
+                                          dispatch(setObjectType("cover"));
                                         }
                                         if (p.name.includes("contain")) {
-                                          dispatch(setObjectType("contain"))
+                                          dispatch(setObjectType("contain"));
                                         }
-                                        dispatch(setTrigger(false))
+                                        dispatch(setTrigger(false));
                                       }}
-                                      className={`flex items-center group relative hover:border-[#00f] hover:border-2 justify-center rounded-lg w-[140px] h-[140px] ${style.customScrollbar} overflow-auto ${imageid === i ? "border-[#00f] border-2" : null}  duration-75 select-none dark:bg-[#313D4E] cursor-pointer bg-[#fafafa]`}
+                                      className={`flex items-center group relative hover:border-[#00f] hover:border-2 justify-center rounded-lg w-[140px] h-[140px] ${
+                                        style.customScrollbar
+                                      } overflow-auto ${
+                                        imageid === i
+                                          ? "border-[#00f] border-2"
+                                          : null
+                                      }  duration-75 select-none dark:bg-[#313D4E] cursor-pointer bg-[#fafafa]`}
                                     >
-                                      {imageid === i && <div className={` absolute z-10 bottom-1 right-1`}>
-                                        <CiCircleCheck className="text-[#00f]" />
-                                      </div>}
+                                      {imageid === i && (
+                                        <div
+                                          className={` absolute z-10 bottom-1 right-1`}
+                                        >
+                                          <CiCircleCheck className="text-[#00f]" />
+                                        </div>
+                                      )}
                                       <div className="w-[100%] h-[100%] relative">
                                         <img
                                           src={p.link}
@@ -3222,7 +3435,7 @@ function page() {
                               <input
                                 value={redirection}
                                 onChange={(e) => {
-                                  dispatch(setRedirection((e.target.value)));
+                                  dispatch(setRedirection(e.target.value));
                                 }}
                                 placeholder="Enter link "
                                 className=" bg-[#f7f7f7] dark:bg-[#313D4E] dark:text-white px-2 light:border rounded-xl text-[#424242] w-[100%] p-1 max-h-[200px] outline-none "
@@ -3249,29 +3462,32 @@ function page() {
                     <div className="h-[80%] w-[90%] justify-evenly mt-4">
                       {/* Image */}
                       <div className="h-[550px] w-[100%]">
-
-                        <div className={`flex flex-col max-h-[400px] $ overflow-y-scroll no-scrollbar`}>
-
+                        <div
+                          className={`flex flex-col max-h-[400px] $ overflow-y-scroll no-scrollbar`}
+                        >
                           <div className="bg-[#f1f1f1] dark:bg-[#3c4555]  relative p-0.5 items-center flex rounded-xl dark:text-[#171717] select-none text-[14px]">
                             <div
-                              className={`duration-150 dark:bg-[#273142] dark:text-white bg-white rounded-xl h-[90%] w-[50%] absolute z-0  ${uploadtype === "background" ? "ml-[49%]" : " "
-                                }`}
+                              className={`duration-150 dark:bg-[#273142] dark:text-white bg-white rounded-xl h-[90%] w-[50%] absolute z-0  ${
+                                uploadtype === "background" ? "ml-[49%]" : " "
+                              }`}
                             ></div>
                             <div
                               onClick={() => setUploadtype("image")}
-                              className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${uploadtype === "image"
-                                ? "dark:text-white text-[#000] font-semibold"
-                                : "text-[#868686] dark:text-white cursor-pointer font-medium"
-                                }`}
+                              className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${
+                                uploadtype === "image"
+                                  ? "dark:text-white text-[#000] font-semibold"
+                                  : "text-[#868686] dark:text-white cursor-pointer font-medium"
+                              }`}
                             >
                               Images
                             </div>
                             <div
                               onClick={() => setUploadtype("background")}
-                              className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${uploadtype === "background"
-                                ? "dark:text-white text-[#000] font-semibold"
-                                : "text-[#868686] dark:text-white cursor-pointer font-medium"
-                                }`}
+                              className={`m-1 z-10  cursor-pointer font-medium rounded-xl h-[80%] w-[50%] flex justify-center items-center ${
+                                uploadtype === "background"
+                                  ? "dark:text-white text-[#000] font-semibold"
+                                  : "text-[#868686] dark:text-white cursor-pointer font-medium"
+                              }`}
                             >
                               Background
                             </div>
@@ -3282,129 +3498,202 @@ function page() {
                               name="myFile"
                               id="fileInput"
                               placeholder="Upload file"
-                              onChange={(e) =>
-                                uploaderPics(e.target.files[0])
+                              onChange={
+                                (e) => uploaderPics(e.target.files[0])
                                 //  setFile()
                               }
                               className="w-[100%] self-start hidden text-[#424242]"
                             />
 
-                            {load ? <div className="flex justify-between gap-4 bg-[#e2e2e2] text-black p-2 px-3 rounded-xl items-center">
-                              <div className="text-xs w-full font-semibold">Upload Your Images</div>
-                              <div className="p-1 px-3 bg-[#4880FF] text-white text-sm  flex justify-center w-[120px] py-2 text-center items-center font-semibold rounded-lg">
-                                <div className="animate-spin">
-                                  <AiOutlineLoading3Quarters />
+                            {load ? (
+                              <div className="flex justify-between gap-4 bg-[#e2e2e2] text-black p-2 px-3 rounded-xl items-center">
+                                <div className="text-xs w-full font-semibold">
+                                  Upload Your Images
+                                </div>
+                                <div className="p-1 px-3 bg-[#4880FF] text-white text-sm  flex justify-center w-[120px] py-2 text-center items-center font-semibold rounded-lg">
+                                  <div className="animate-spin">
+                                    <AiOutlineLoading3Quarters />
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="flex justify-between gap-4 bg-[#e2e2e2] text-black p-2 px-3 rounded-xl items-center">
+                                <div className="text-xs font-semibold">
+                                  Upload Your{" "}
+                                  {uploadtype === "image"
+                                    ? "Images"
+                                    : "Backgrounds"}
+                                </div>
+                                {uploadtype === "image" ? (
+                                  <>
+                                    {memberships == "Free" &&
+                                    link.length >= 10 ? (
+                                      <div
+                                        onClick={() =>
+                                          toast.error(
+                                            "Max Image Upload Reached!"
+                                          )
+                                        }
+                                        className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg"
+                                      >
+                                        <div>Upload</div>
+                                        <FaCrown className=" text-orange-300 " />
+                                      </div>
+                                    ) : (
+                                      <label
+                                        htmlFor="fileInput"
+                                        className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg"
+                                      >
+                                        <div>Upload</div>
+                                      </label>
+                                    )}
+                                  </>
+                                ) : (
+                                  <>
+                                    {memberships == "Free" &&
+                                    blinks.length >= 10 ? (
+                                      <div
+                                        onClick={() =>
+                                          toast.error(
+                                            "Max Backgrounds Upload Reached!"
+                                          )
+                                        }
+                                        className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg"
+                                      >
+                                        <div>Upload</div>
+                                        <FaCrown className=" text-orange-300 " />
+                                      </div>
+                                    ) : (
+                                      <label
+                                        htmlFor="fileInput"
+                                        className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg"
+                                      >
+                                        <div>Upload</div>
+                                      </label>
+                                    )}
+                                  </>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                          {uploadtype === "image" ? (
+                            <div>
+                              <div className="text-[#9c9c9c] font-medium text-[14px] mt-2">
+                                Uploaded Images
+                              </div>
+                              <div className="h-full pn:max-sm:w-[100%] ">
+                                <div
+                                  className={`w-[100%] gap-3 pn:max-sm:w-[100%] grid grid-cols-2 h-[100%]`}
+                                >
+                                  {link &&
+                                    link.map((m, i) => (
+                                      <div
+                                        key={i}
+                                        onClick={() => {
+                                          setUserImageId(i);
+                                          dispatch(setimage(m));
+                                          dispatch(setTrigger(false));
+                                          if (m.premium) {
+                                            if (memberships === "Free") {
+                                              dispatch(
+                                                setPremium({ type: "image" })
+                                              );
+                                            }
+                                          } else {
+                                            if (memberships === "Free") {
+                                              dispatch(
+                                                setRemovePremium({
+                                                  type: "image",
+                                                })
+                                              );
+                                            }
+                                          }
+                                        }}
+                                        className={`flex items-center justify-center mt-1 relative group hover:border hover:border-[#00f] rounded-xl h-[130px] dark:bg-[#313D4E] duration-75 select-none cursor-pointer ${
+                                          userImageId === i
+                                            ? "border border-[#00f]"
+                                            : null
+                                        } dark:bg-[#313D4E] bg-[#fafafa]`}
+                                      >
+                                        {userImageId === i && (
+                                          <div
+                                            className={` absolute z-10 bottom-1 right-1`}
+                                          >
+                                            <CiCircleCheck className="text-[#00f]" />
+                                          </div>
+                                        )}
+                                        <div className="w-[90%] h-[90%] rounded-xl">
+                                          <img
+                                            src={m}
+                                            alt="pic"
+                                            className="p-2 flex-row flex  rounded-xl h-full w-full dark:bg-[#313D4E]  bg-[#fafafa] "
+                                          />
+                                        </div>
+                                      </div>
+                                    ))}
                                 </div>
                               </div>
                             </div>
-                              : <div className="flex justify-between gap-4 bg-[#e2e2e2] text-black p-2 px-3 rounded-xl items-center">
-                                <div className="text-xs font-semibold">Upload Your {uploadtype === "image" ? "Images" : "Backgrounds"}</div>
-                                {
-                                  uploadtype === "image" ?
-                                    <>
-                                      {
-                                        (memberships == "Free" && link.length >= 5) ? <div onClick={() => toast.error("Max Image Upload Reached!")} className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg">
-                                          <div>Upload</div>
-                                          <FaCrown className=" text-orange-300 " />
-                                        </div> : <label htmlFor="fileInput" className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg">
-                                          <div>Upload</div>
-                                        </label>
-                                      }
-                                    </>
-                                    :
-                                    <>
-                                      {
-                                        (memberships == "Free" && blinks.length >= 5) ? <div onClick={() => toast.error("Max Backgrounds Upload Reached!")} className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg">
-                                          <div>Upload</div>
-                                          <FaCrown className=" text-orange-300 " />
-                                        </div> : <label htmlFor="fileInput" className="p-1 px-3 bg-[#4880FF] text-white flex justify-center items-center gap-1 text-sm font-semibold rounded-lg">
-                                          <div>Upload</div>
-
-                                        </label>
-                                      }
-                                    </>
-                                }
-                              </div>}
-
-                          </div>
-                          {
-                            uploadtype === "image" ?
-                              <div>
-                                <div className="text-[#9c9c9c] font-medium text-[14px] mt-2">
-                                  Uploaded Images
-                                </div>
-                                <div className="h-full pn:max-sm:w-[100%] ">
-                                  <div
-                                    className={`w-[100%] gap-3 pn:max-sm:w-[100%] grid grid-cols-2 h-[100%]`}
-                                  >
-                                    {link &&
-                                      link.map((m, i) => (
-                                        <div
-                                          key={i}
-                                          onClick={() => {
-                                            setUserImageId(i)
-                                            dispatch(setimage(m));
-                                            dispatch(setTrigger(false))
-                                          }}
-                                          className={`flex items-center justify-center mt-1 relative group hover:border hover:border-[#00f] rounded-xl h-[130px] dark:bg-[#313D4E] duration-75 select-none cursor-pointer ${userImageId === i ? "border border-[#00f]" : null} dark:bg-[#313D4E] bg-[#fafafa]`}
-                                        >
-                                          {userImageId === i && <div className={` absolute z-10 bottom-1 right-1`}>
+                          ) : (
+                            <div>
+                              <div className="text-[#9c9c9c] font-medium text-[14px] mt-2">
+                                Background Images
+                              </div>
+                              <div className="h-full w-full pn:max-sm:w-[100%] ">
+                                <div
+                                  className={`w-[100%] gap-3 pn:max-sm:w-[100%] grid grid-cols-2 h-[100%]`}
+                                >
+                                  {blinks &&
+                                    blinks.map((m, i) => (
+                                      <div
+                                        key={i}
+                                        onClick={() => {
+                                          setBackId(i);
+                                          dispatch(setBgImage(m));
+                                          dispatch(setTrigger(false));
+                                          if (m.premium) {
+                                            if (memberships === "Free") {
+                                              dispatch(
+                                                setPremium({ type: "bgimage" })
+                                              );
+                                            }
+                                          } else {
+                                            if (memberships === "Free") {
+                                              dispatch(
+                                                setRemovePremium({
+                                                  type: "bgimage",
+                                                })
+                                              );
+                                            }
+                                          }
+                                        }}
+                                        className={`flex items-center justify-center w-[130px] mt-1 relative group hover:border hover:border-[#00f] rounded-xl h-[130px] duration-75 select-none cursor-pointer ${
+                                          backid === i
+                                            ? "border border-[#00f]"
+                                            : null
+                                        } dark:bg-[#313D4E] bg-[#fafafa]`}
+                                      >
+                                        {backid === i && (
+                                          <div
+                                            className={` absolute z-10 bottom-1 right-1`}
+                                          >
                                             <CiCircleCheck className="text-[#00f]" />
-                                          </div>}
-                                          <div className="w-[90%] h-[90%] rounded-xl">
-                                            <img
-                                              src={m}
-                                              alt="pic"
-                                              className="p-2 flex-row flex  rounded-xl h-full w-full dark:bg-[#313D4E]  bg-[#fafafa] "
-                                            />
                                           </div>
+                                        )}
+                                        <div className="w-[90%] h-[90%]">
+                                          <img
+                                            src={m}
+                                            alt="pic"
+                                            className="p-2 flex-row flex h-full w-full  rounded-xl dark:bg-[#313D4E] bg-[#fafafa] "
+                                          />
                                         </div>
-                                      ))}
-                                  </div>
-                                </div>
-                              </div> : <div>
-                                <div className="text-[#9c9c9c] font-medium text-[14px] mt-2">
-                                  Background Images
-                                </div>
-                                <div className="h-full w-full pn:max-sm:w-[100%] ">
-                                  <div
-                                    className={`w-[100%] gap-3 pn:max-sm:w-[100%] grid grid-cols-2 h-[100%]`}
-                                  >
-
-                                    {blinks &&
-                                      blinks.map((m, i) => (
-                                        <div
-                                          key={i}
-                                          onClick={() => {
-                                            setBackId(i)
-                                            dispatch(setBgImage(m));
-                                            dispatch(setTrigger(false))
-                                          }}
-                                          className={`flex items-center justify-center w-[130px] mt-1 relative group hover:border hover:border-[#00f] rounded-xl h-[130px] duration-75 select-none cursor-pointer ${backid === i ? "border border-[#00f]" : null} dark:bg-[#313D4E] bg-[#fafafa]`}
-                                        >
-                                          {backid === i && <div className={` absolute z-10 bottom-1 right-1`}>
-                                            <CiCircleCheck className="text-[#00f]" />
-                                          </div>}
-                                          <div className="w-[90%] h-[90%]">
-                                            <img
-                                              src={m}
-                                              alt="pic"
-                                              className="p-2 flex-row flex h-full w-full  rounded-xl dark:bg-[#313D4E] bg-[#fafafa] "
-                                            />
-                                          </div>
-                                        </div>
-                                      ))}
-                                  </div>
+                                      </div>
+                                    ))}
                                 </div>
                               </div>
-
-                          }
-
-
-
-
+                            </div>
+                          )}
                         </div>
-
                       </div>
                       {/* backgrounds */}
                     </div>
@@ -3421,21 +3710,29 @@ function page() {
                         </div>
                         <div className="border-b-[0.5px] border-dotted" />
                         <div className="flex flex-col gap-4 px-2 my-3">
-
-
-                          {(memberships === "Premium" || memberships === "Pro") &&
-                            < div className="w-full flex flex-col">
-                              <div className="text-[15px] font-semibold">Add Custom Your Domains</div>
+                          {(memberships === "Premium" ||
+                            memberships === "Pro") && (
+                            <div className="w-full flex flex-col">
+                              <div className="text-[15px] font-semibold">
+                                Add Custom Your Domains
+                              </div>
                               <div className="flex border-b border-white w-full  justify-center items-center gap-1">
-                                <input type="text"
+                                <input
+                                  type="text"
                                   value={domain}
                                   onChange={(e) => setDomain(e.target.value)}
                                   placeholder="Add Your Domains"
-                                  className="outline-none bg-transparent placeholder:text-sm w-full placeholder:text-[#9c9c9c]" />
-                                <div onClick={applyDomains} className="text-sm cursor-pointer py-2  rounded-xl  font-medium">Save</div>
+                                  className="outline-none bg-transparent placeholder:text-sm w-full placeholder:text-[#9c9c9c]"
+                                />
+                                <div
+                                  onClick={applyDomains}
+                                  className="text-sm cursor-pointer py-2  rounded-xl  font-medium"
+                                >
+                                  Save
+                                </div>
                               </div>
                             </div>
-                          }
+                          )}
 
                           <div className="flex flex-col w-full">
                             <div className="font-semibold">
@@ -3554,19 +3851,17 @@ function page() {
                             </div>
                           </div>
 
-
-
                           <div className="flex flex-col w-full">
                             <div
                               onClick={() => deleteTemp()}
-                              className={`sm:hidden select-none justify-center text-white px-4 py-1 flex rounded-xl gap-1 mr-2 cursor-pointer font-semibold items-center ${savetemplate ? " bg-[#d03d3d] " : "bg-[#8cec74]"
-                                }`}
+                              className={`sm:hidden select-none justify-center text-white px-4 py-1 flex rounded-xl gap-1 mr-2 cursor-pointer font-semibold items-center ${
+                                savetemplate ? " bg-[#d03d3d] " : "bg-[#8cec74]"
+                              }`}
                             >
                               <div>Discard</div>
                             </div>
                           </div>
                         </div>
-
                       </div>
                     </div>
                   </div>
@@ -3583,16 +3878,19 @@ function page() {
                 onClick={() => {
                   setSwitcher(true);
                 }}
-                className={` py-1 w-[100px] flex justify-center items-center rounded-lg gap-2 select-none cursor-pointer duration-100 ${switcher === true ? "bg-[#EEF2FF]" : "bg-[#ffffff]"
-                  }`}
+                className={` py-1 w-[100px] flex justify-center items-center rounded-lg gap-2 select-none cursor-pointer duration-100 ${
+                  switcher === true ? "bg-[#EEF2FF]" : "bg-[#ffffff]"
+                }`}
               >
                 <HiOutlineDesktopComputer
-                  className={`${switcher === true ? "text-[#6366F1]" : "text-[#424242]"
-                    }`}
+                  className={`${
+                    switcher === true ? "text-[#6366F1]" : "text-[#424242]"
+                  }`}
                 />
                 <div
-                  className={`${switcher === true ? "text-[#6366F1]" : "text-[#424242]"
-                    }`}
+                  className={`${
+                    switcher === true ? "text-[#6366F1]" : "text-[#424242]"
+                  }`}
                 >
                   Web
                 </div>
@@ -3601,16 +3899,19 @@ function page() {
                 onClick={() => {
                   setSwitcher(false);
                 }}
-                className={` py-1 w-[100px] flex justify-center items-center rounded-lg gap-2 select-none cursor-pointer duration-100 ${switcher === false ? "bg-[#EEF2FF]" : "bg-[#ffffff]"
-                  }`}
+                className={` py-1 w-[100px] flex justify-center items-center rounded-lg gap-2 select-none cursor-pointer duration-100 ${
+                  switcher === false ? "bg-[#EEF2FF]" : "bg-[#ffffff]"
+                }`}
               >
                 <CiMobile2
-                  className={`${switcher === false ? "text-[#6366F1]" : "text-[#424242]"
-                    }`}
+                  className={`${
+                    switcher === false ? "text-[#6366F1]" : "text-[#424242]"
+                  }`}
                 />
                 <div
-                  className={`${switcher === false ? "text-[#6366F1]" : "text-[#424242]"
-                    }`}
+                  className={`${
+                    switcher === false ? "text-[#6366F1]" : "text-[#424242]"
+                  }`}
                 >
                   Mobile
                 </div>
@@ -3618,10 +3919,11 @@ function page() {
             </div>
             <div
               ref={webRef}
-              className={` duration-75 ${switcher === true
-                ? "xl:max-txl:h-[70%] xl:max-txl:w-[70%] h-[80%] w-[80%] bg-white  pn:max-ss:h-[30%] ss:max-pp:h-[40%] pp:max-sm:h-[60%] pn:max-sm:w-[98%] duration-75"
-                : "h-[500px] w-[300px] bg-slate-100"
-                }`}
+              className={` duration-75 ${
+                switcher === true
+                  ? "xl:max-txl:h-[70%] xl:max-txl:w-[70%] h-[80%] w-[80%] bg-white  pn:max-ss:h-[30%] ss:max-pp:h-[40%] pp:max-sm:h-[60%] pn:max-sm:w-[98%] duration-75"
+                  : "h-[500px] w-[300px] bg-slate-100"
+              }`}
             >
               {/* Template 1 */}
               {template === 1 ? (
@@ -3810,8 +4112,8 @@ function page() {
             </div>
           </div>
         </div>
-      </div >
-    </Drawer >
+      </div>
+    </Drawer>
   );
 }
 
